@@ -6,9 +6,10 @@ import SelfImprovementIcon from "../../public/icons/iconCategory-SelfImprovement
 import nonFictionIcon from "../../public/icons/IconCategory-NonFiction.svg";
 // import {StaticImageData} from ""
 
+// HOME PAGE CATEGORY as per Figma
 type CategoryData = {
   category: string;
-  src: String;
+  src: string;
   href: string;
   alt: string;
   // hoverBg:string;
@@ -46,3 +47,26 @@ export const categoryData: CategoryData[] = [
     alt: "Science & Technology",
   },
 ];
+
+// ===============================
+// BOOK CATEGORIES FOR ADMIN
+// ==============================
+const rawBackendCategories = [
+  { id: 8, name: "Education" },
+  { id: 4, name: "Fiction" },
+  { id: 9, name: "Finance" },
+  { id: 5, name: "Lifestyle" },
+  { id: 10, name: "Non-Fiction" },
+  { id: 6, name: "Religious" },
+  { id: 11, name: "Science" },
+  { id: 12, name: "Science-Fiction" },
+  { id: 7, name: "Self-Improvement" },
+  { id: 17, name: "string" },
+  { id: 13, name: "Test Category API" },
+  { id: 1, name: "Updated Category API" },
+  { id: 15, name: "Updated Dummy Category" },
+];
+
+export const categoriesBackend = [...rawBackendCategories].sort((a, b) =>
+  a.name.localeCompare(b.name),
+);

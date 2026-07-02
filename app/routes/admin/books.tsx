@@ -86,6 +86,12 @@ export default function AdminBookList() {
           >
             Book List
           </Link>
+          <Link
+            to="/admin/books/new"
+            className="rounded-lg bg-white px-6 py-2 text-[#0A0D12] no-underline shadow-xs"
+          >
+            Add Book
+          </Link>
         </div>
 
         <div className="mb-6 flex items-center justify-between">
