@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
+import { useBookData } from "~/lib/api/useBookData";
+
 import { Input } from "~/components/ui/input";
 import { InputGroup } from "../ui/input-group";
 import { Label } from "radix-ui";
@@ -34,81 +36,108 @@ export function BookForm({
   isPending,
   categories,
 }: BookFormProps) {
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-  const [pages, setPages] = useState("");
-  const [description, setDescription] = useState("");
-  const [coverImage, setCoverImage] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
+  const {
+    title,
+    setTitle,
+    author,
+    setAuthor,
+    categoryId,
+    setCategoryId,
+    pages,
+    setPages,
+    description,
+    setDescription,
+    previewUrl,
+    isDeleting,
+    handleFileChange,
+    handleDeleteBook,
+    handleFormSubmit,
+  } = useBookData({ initialData, onSubmit });
 
-  useEffect(() => {
-    if (initialData) {
-      setTitle(initialData.title || "");
-      setAuthor(initialData.author?.name || initialData.author || "");
-      setCategoryId(initialData.categoryId || "");
-      setPages(String(initialData.publishedYear || ""));
-      setDescription(initialData.description || "");
-      setPreviewUrl(initialData.coverImage || "");
-    }
-  }, [initialData]);
+  //   const [title, setTitle] = useState("");
+  //   const [author, setAuthor] = useState("");
+  //   const [categoryId, setCategoryId] = useState("");
+  //   const [pages, setPages] = useState("");
+  //   const [description, setDescription] = useState("");
+  //   const [coverImage, setCoverImage] = useState<File | null>(null);
+  //   const [previewUrl, setPreviewUrl] = useState("");
+  //   const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setCoverImage(file);
-      setPreviewUrl(URL.createObjectURL(file));
-    }
-  };
+  //   useEffect(() => {
+  //     if (initialData) {
+  //       setTitle(initialData.title || "");
+  //       setAuthor(initialData.author?.name || initialData.author || "");
+  //       setCategoryId(initialData.categoryId || "");
+  //       setPages(String(initialData.publishedYear || ""));
+  //       setDescription(initialData.description || "");
+  //       setPreviewUrl(initialData.coverImage || "");
+  //     }
+  //   }, [initialData]);
 
-  const handleDeleteBook = async () => {
-    if (!initialData?.id) {
-      // if new data and not found in db, clean local state
-      setCoverImage(null);
-      setPreviewUrl("");
-      return;
-    }
+  //   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //     const file = e.target.files?.[0];
+  //     if (file) {
+  //       setCoverImage(file);
+  //       setPreviewUrl(URL.createObjectURL(file));
+  //     }
+  //   };
 
-    setIsDeleting(true);
-    try {
-      const res = await api.delete(`/api/books/${initialData.id}`);
+  //   const handleDeleteBook = async () => {
+  //     if (!initialData?.id) {
+  //       // if new data and not found in db, clean local state
+  //       setCoverImage(null);
+  //       setPreviewUrl("");
+  //       return;
+  //     }
 
-      if (res.status === 200 || res.status === 204) {
-        toast.success("Book data deleted successfully");
-        setCoverImage(null);
-        setPreviewUrl("");
-      }
-    } catch (error: any) {
-      if (
-        error.res?.status === 400 ||
-        error.res?.data?.message?.toLowerCase().includes("outstanding")
-      ) {
-        toast.error(
-          `There's outstanding loan, book "${title}" cannot be deleted!`,
-        );
-      } else {
-        toast.error(error.res?.data?.message || "Failed to delete book data");
-      }
-    } finally {
-      setIsDeleting(false);
-    }
-  };
+  //     setIsDeleting(true);
+  //     try {
+  //       const res = await api.delete(`/api/books/${initialData.id}`);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("author", author);
-    formData.append("categoryId", categoryId);
-    formData.append("publishedYear", pages);
-    formData.append("description", description);
-    if (coverImage) formData.append("cover", coverImage);
-    onSubmit(formData);
-  };
+  //       if (res.status === 200 || res.status === 204) {
+  //         toast.success("Book data deleted successfully");
+  //         setCoverImage(null);
+  //         setPreviewUrl("");
+  //       }
+  //     } catch (error: any) {
+  //       // Get error message from axios
+  //       const resData = error.res?.data;
+  //       const errorMessage = resData?.message || "";
+  //       const status = error.res?.status;
+
+  //       if (
+  //         // error.res?.status === 400 ||
+  //         status === 400 ||
+  //         errorMessage.toLowerCase().includes("outstanding") ||
+  //         errorMessage.toLowerCase().includes("loan")
+  //         // error.res?.data?.message?.toLowerCase().includes("outstanding")
+  //       ) {
+  //         toast.error(
+  //           `There's outstanding loan, book "${title}" cannot be deleted!`,
+  //         );
+  //       } else {
+  //         // toast.error(error.res?.data?.message || "Failed to delete book data");
+  //         toast.error(errorMessage || "Failed to delete book data");
+  //       }
+  //     } finally {
+  //       setIsDeleting(false);
+  //     }
+  //   };
+
+  //   const handleSubmit = (e: React.FormEvent) => {
+  //     e.preventDefault();
+  //     const formData = new FormData();
+  //     formData.append("title", title);
+  //     formData.append("author", author);
+  //     formData.append("categoryId", categoryId);
+  //     formData.append("publishedYear", pages);
+  //     formData.append("description", description);
+  //     if (coverImage) formData.append("cover", coverImage);
+  //     onSubmit(formData);
+  //   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex w-full flex-col gap-6">
+    <form onSubmit={handleFormSubmit} className="flex w-full flex-col gap-6">
       <div className="flex w-full flex-col items-start gap-0.5">
         <label
           htmlFor="title"

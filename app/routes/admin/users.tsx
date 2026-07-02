@@ -113,7 +113,7 @@ export default function AdminUserList() {
         <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xs">
           <Table>
             <TableHeader>
-              <TableRow className="border-b border-gray-100 hover:bg-transparent">
+              <TableRow className="border-b border-gray-100 bg-[#F5F5F5] hover:bg-transparent">
                 <TableHead className="text-14 h-12 w-16 px-4 font-bold text-[#0A0D12]">
                   No
                 </TableHead>

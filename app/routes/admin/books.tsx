@@ -243,7 +243,7 @@ export default function AdminBookList() {
                     asChild
                     className="w-23.75 text-red-500"
                   >
-                    <Link>Delete</Link>
+                    <Link to={""}>Delete</Link>
                   </Button>
                 </div>
               </div>
