@@ -65,7 +65,7 @@ export default function AdminBookList() {
     <div className="min-h-screen w-full bg-white font-['Quicksand']">
       <Navbar />
 
-      <main className="mx-auto max-w-[1440px] px-6 py-6 lg:px-10">
+      <main className="mx-auto max-w-[1200px] py-6">
         {/* TABS MENU UTAMA */}
         <div className="text-14 mb-8 flex w-fit gap-2 rounded-xl bg-gray-100 p-1.5 font-bold text-gray-500">
           <Link
