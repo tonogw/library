@@ -41,9 +41,9 @@ export default function BookMaintenance() {
   });
 
   return (
-    <div className="min-h-screen w-full bg-white pb-24 font-quicksand">
+    <div className="min-h-screen w-full bg-white font-quicksand">
       <Navbar />
-      <main className="mx-auto mt-32 flex max-w-[529px] flex-col gap-6 px-4 md:px-0">
+      <main className="mx-auto flex max-w-[529px] flex-col gap-6 px-4 md:px-0">
         <div className="flex h-9 flex-row items-center gap-3">
           <button
             type="button"

@@ -62,7 +62,7 @@ export default function AdminBookList() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-white pt-24 font-['Quicksand']">
+    <div className="min-h-screen w-full bg-white font-['Quicksand']">
       <Navbar />
 
       <main className="mx-auto max-w-[1440px] px-6 py-6 lg:px-10">

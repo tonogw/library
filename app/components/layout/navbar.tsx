@@ -1,16 +1,16 @@
-import { useState, useEffect } from 'react'; // 1. Tambahkan useEffect
-import { Link } from 'react-router';
-import { useSelector } from 'react-redux';
-import { useQuery } from '@tanstack/react-query';
-import { selectIsAuthenticated } from '~/store/authSlice';
-import { queryKeys } from '~/lib/query/keys';
-import api from '~/lib/api/axios';
-import { Input } from '../ui/input';
-import { UserProfileSheet } from '../shared/userProfileSheet';
-import { Search } from 'lucide-react';
+import { useState, useEffect } from "react"; // 1. Tambahkan useEffect
+import { Link } from "react-router";
+import { useSelector } from "react-redux";
+import { useQuery } from "@tanstack/react-query";
+import { selectIsAuthenticated } from "~/store/authSlice";
+import { queryKeys } from "~/lib/query/keys";
+import api from "~/lib/api/axios";
+import { Input } from "../ui/input";
+import { UserProfileSheet } from "../shared/userProfileSheet";
+import { Search } from "lucide-react";
 
 export default function Navbar() {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [mounted, setMounted] = useState(false); // 2. State untuk melacak mounting browser
   const isAuthenticated = useSelector(selectIsAuthenticated);
 
@@ -22,7 +22,7 @@ export default function Navbar() {
   const { data: cartData } = useQuery({
     queryKey: queryKeys.cart(),
     queryFn: async () => {
-      const response = await api.get('/api/cart');
+      const response = await api.get("/api/cart");
       return response.data;
     },
     enabled: isAuthenticated && mounted, // Hanya ambil data jika sudah mounted
@@ -31,8 +31,8 @@ export default function Navbar() {
   const totalItems = cartData?.summary?.totalItems ?? 0;
 
   return (
-    <nav className="fixed top-0 z-60 w-full bg-white">
-      <div className="custom-container mx-auto flex h-20 items-center justify-between">
+    <nav className="sticky top-0 z-50 h-20 border-b border-gray-100 bg-white">
+      <div className="mx-auto flex h-20 max-w-[1440px] items-center justify-between bg-white px-6 lg:px-[120px]">
         {/* LOGO */}
         <Link to="/" className="flex items-center gap-[11.79px]">
           <img

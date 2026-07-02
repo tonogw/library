@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
-@import 'tailwindcss';
-@import 'tw-animate-css';
-@import 'shadcn/tailwind.css';
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 /* @import "@fontsource/quicksand/variable.css"; Mengimpor variable font Quicksand jika menggunakan bundler npm */
 /* @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700;800&display=swap'); */
 
@@ -52,7 +52,7 @@
 
 @theme {
   /* ✓ Kalibrasi Font Family Utama ke Quicksand */
-  --font-quicksand: 'Quicksand', 'Geist Variable', sans-serif;
+  --font-quicksand: "Quicksand", "Geist Variable", sans-serif;
 
   /* ✓ Kalibrasi Ulang Display Typography Berdasarkan Figma */
   --text-display-3xl: 3.75rem; /* 60px */
@@ -249,13 +249,6 @@
   }
   html {
     @apply font-quicksand; /* Memastikan pemicu font-sans otomatis memakai token Quicksand */
-  }
-}
-
-@layer components {
-  .custom-container {
-    margin: 0 auto;
-    @apply max-w-300;
   }
 }
 

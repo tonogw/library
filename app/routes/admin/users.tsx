@@ -1,10 +1,10 @@
-import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { queryKeys } from "~/lib/query/keys"
-import api from "~/lib/api/axios"
-import Navbar from "~/components/layout/navbar"
-import { Input } from "~/components/ui/input"
-import { Link } from "react-router" // 1. Import Link untuk navigasi antar halaman admin
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "~/lib/query/keys";
+import api from "~/lib/api/axios";
+import Navbar from "~/components/layout/navbar";
+import { Input } from "~/components/ui/input";
+import { Link } from "react-router"; // 1. Import Link untuk navigasi antar halaman admin
 import {
   Table,
   TableBody,
@@ -12,7 +12,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "~/components/ui/table"
+} from "~/components/ui/table";
 import {
   Pagination,
   PaginationContent,
@@ -21,14 +21,14 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "~/components/ui/pagination"
+} from "~/components/ui/pagination";
 
-import { Search, ChevronLeft, ChevronRight } from "lucide-react"
+import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function AdminUserList() {
-  const [keyword, setKeyword] = useState("")
-  const [search, setSearch] = useState("")
-  const [page, setPage] = useState(1)
+  const [keyword, setKeyword] = useState("");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
 
   const { data, isLoading, isFetching } = useQuery({
     queryKey: queryKeys.adminUsers(search, page),
@@ -39,32 +39,32 @@ export default function AdminUserList() {
           page,
           limit: 10,
         },
-      })
-      return response.data
+      });
+      return response.data;
     },
-  })
+  });
 
-  const usersList = data?.data?.users || []
-  const totalEntries = data?.data?.pagination?.total || 0
+  const usersList = data?.data?.users || [];
+  const totalEntries = data?.data?.pagination?.total || 0;
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      setPage(1)
-      setSearch(keyword)
+      setPage(1);
+      setSearch(keyword);
     }
-  }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value
-    setKeyword(val)
+    const val = e.target.value;
+    setKeyword(val);
     if (val === "") {
-      setPage(1)
-      setSearch("")
+      setPage(1);
+      setSearch("");
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen w-full bg-white pt-24 font-['Quicksand']">
+    <div className="w-full bg-white font-['Quicksand']">
       <Navbar />
 
       <main className="mx-auto max-w-[1440px] px-6 py-6 lg:px-10">
@@ -229,8 +229,8 @@ export default function AdminUserList() {
                     <PaginationItem>
                       <PaginationPrevious
                         onClick={(e) => {
-                          e.preventDefault()
-                          if (page > 1) setPage((p) => p - 1)
+                          e.preventDefault();
+                          if (page > 1) setPage((p) => p - 1);
                         }}
                         href="#"
                         className={
@@ -245,8 +245,8 @@ export default function AdminUserList() {
                     <PaginationItem>
                       <PaginationLink
                         onClick={(e) => {
-                          e.preventDefault()
-                          setPage(1)
+                          e.preventDefault();
+                          setPage(1);
                         }}
                         href="#"
                         isActive={page === 1}
@@ -260,8 +260,8 @@ export default function AdminUserList() {
                       <PaginationItem>
                         <PaginationLink
                           onClick={(e) => {
-                            e.preventDefault()
-                            setPage(page - 1)
+                            e.preventDefault();
+                            setPage(page - 1);
                           }}
                           href="#"
                         >
@@ -282,8 +282,8 @@ export default function AdminUserList() {
                       <PaginationItem>
                         <PaginationLink
                           onClick={(e) => {
-                            e.preventDefault()
-                            setPage(page + 1)
+                            e.preventDefault();
+                            setPage(page + 1);
                           }}
                           href="#"
                         >
@@ -304,8 +304,8 @@ export default function AdminUserList() {
                       <PaginationItem>
                         <PaginationLink
                           onClick={(e) => {
-                            e.preventDefault()
-                            setPage(Math.ceil(totalEntries / 10))
+                            e.preventDefault();
+                            setPage(Math.ceil(totalEntries / 10));
                           }}
                           href="#"
                           isActive={page === Math.ceil(totalEntries / 10)}
@@ -319,8 +319,8 @@ export default function AdminUserList() {
                     <PaginationItem>
                       <PaginationNext
                         onClick={(e) => {
-                          e.preventDefault()
-                          if (page * 10 < totalEntries) setPage((p) => p + 1)
+                          e.preventDefault();
+                          if (page * 10 < totalEntries) setPage((p) => p + 1);
                         }}
                         href="#"
                         className={
@@ -338,5 +338,5 @@ export default function AdminUserList() {
         </div>
       </main>
     </div>
-  )
+  );
 }

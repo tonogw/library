@@ -12,5 +12,6 @@ export const queryKeys = {
   adminUsers: (search?: string, page?: number) =>
     ["admin", "users", { search, page }] as const,
   adminBooks: (filters?: any) => ["admin", "books", filters] as const,
+  // adminBooks: (delete?: any)=> ["admin", "books", delete] as const,
   adminLoans: (filters?: any) => ["admin", "loans", filters] as const,
-}
+};
