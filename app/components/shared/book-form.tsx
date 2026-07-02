@@ -72,7 +72,7 @@ export function BookForm({
 
     setIsDeleting(true);
     try {
-      const res = await api.delete(`/api/admin/books/${initialData.id}`);
+      const res = await api.delete(`/api/books/${initialData.id}`);
 
       if (res.status === 200 || res.status === 204) {
         toast.success("Book data deleted successfully");
