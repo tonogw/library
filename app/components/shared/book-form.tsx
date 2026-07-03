@@ -1,6 +1,6 @@
 // import { useState, useEffect } from "react";
 import { useBookData } from "~/lib/api/useBookData";
-
+import { BookData } from "~/lib/api/book-data";
 import { Input } from "~/components/ui/input";
 import { InputGroup } from "../ui/input-group";
 import { Label } from "radix-ui";
@@ -15,7 +15,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogMedia,
+  //   AlertDialogMedia,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
@@ -25,7 +25,7 @@ import api from "~/lib/api/axios";
 
 interface BookFormProps {
   initialData?: any;
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data: any) => void; //FormData-> any
   isPending: boolean;
   categories: any[];
 }
@@ -39,102 +39,26 @@ export function BookForm({
   const {
     title,
     setTitle,
-    author,
-    setAuthor,
+    isbn,
+    setIsbn,
+    authorName,
+    setAuthorName,
     categoryId,
     setCategoryId,
-    pages,
-    setPages,
+    publishedYear,
+    setPublishedYear,
     description,
     setDescription,
     previewUrl,
+    totalCopies,
+    setTotalCopies,
+    availableCopies,
+    setAvailableCopies,
     isDeleting,
     handleFileChange,
     handleDeleteBook,
     handleFormSubmit,
   } = useBookData({ initialData, onSubmit });
-
-  //   const [title, setTitle] = useState("");
-  //   const [author, setAuthor] = useState("");
-  //   const [categoryId, setCategoryId] = useState("");
-  //   const [pages, setPages] = useState("");
-  //   const [description, setDescription] = useState("");
-  //   const [coverImage, setCoverImage] = useState<File | null>(null);
-  //   const [previewUrl, setPreviewUrl] = useState("");
-  //   const [isDeleting, setIsDeleting] = useState(false);
-
-  //   useEffect(() => {
-  //     if (initialData) {
-  //       setTitle(initialData.title || "");
-  //       setAuthor(initialData.author?.name || initialData.author || "");
-  //       setCategoryId(initialData.categoryId || "");
-  //       setPages(String(initialData.publishedYear || ""));
-  //       setDescription(initialData.description || "");
-  //       setPreviewUrl(initialData.coverImage || "");
-  //     }
-  //   }, [initialData]);
-
-  //   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //     const file = e.target.files?.[0];
-  //     if (file) {
-  //       setCoverImage(file);
-  //       setPreviewUrl(URL.createObjectURL(file));
-  //     }
-  //   };
-
-  //   const handleDeleteBook = async () => {
-  //     if (!initialData?.id) {
-  //       // if new data and not found in db, clean local state
-  //       setCoverImage(null);
-  //       setPreviewUrl("");
-  //       return;
-  //     }
-
-  //     setIsDeleting(true);
-  //     try {
-  //       const res = await api.delete(`/api/books/${initialData.id}`);
-
-  //       if (res.status === 200 || res.status === 204) {
-  //         toast.success("Book data deleted successfully");
-  //         setCoverImage(null);
-  //         setPreviewUrl("");
-  //       }
-  //     } catch (error: any) {
-  //       // Get error message from axios
-  //       const resData = error.res?.data;
-  //       const errorMessage = resData?.message || "";
-  //       const status = error.res?.status;
-
-  //       if (
-  //         // error.res?.status === 400 ||
-  //         status === 400 ||
-  //         errorMessage.toLowerCase().includes("outstanding") ||
-  //         errorMessage.toLowerCase().includes("loan")
-  //         // error.res?.data?.message?.toLowerCase().includes("outstanding")
-  //       ) {
-  //         toast.error(
-  //           `There's outstanding loan, book "${title}" cannot be deleted!`,
-  //         );
-  //       } else {
-  //         // toast.error(error.res?.data?.message || "Failed to delete book data");
-  //         toast.error(errorMessage || "Failed to delete book data");
-  //       }
-  //     } finally {
-  //       setIsDeleting(false);
-  //     }
-  //   };
-
-  //   const handleSubmit = (e: React.FormEvent) => {
-  //     e.preventDefault();
-  //     const formData = new FormData();
-  //     formData.append("title", title);
-  //     formData.append("author", author);
-  //     formData.append("categoryId", categoryId);
-  //     formData.append("publishedYear", pages);
-  //     formData.append("description", description);
-  //     if (coverImage) formData.append("cover", coverImage);
-  //     onSubmit(formData);
-  //   };
 
   return (
     <form onSubmit={handleFormSubmit} className="flex w-full flex-col gap-6">
@@ -148,7 +72,7 @@ export function BookForm({
         <Input
           id="title"
           required
-          placeholder="Masukkan judul buku..."
+          placeholder="Book title..."
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className="text-14 h-12 w-full rounded-xl border border-[#D5D7DA] bg-white px-4 text-[#0A0D12]"
@@ -157,31 +81,48 @@ export function BookForm({
 
       <div className="flex w-full flex-col items-start gap-0.5">
         <label
-          htmlFor="author"
+          htmlFor="isbn"
           className="text-14 flex h-7 items-center font-bold text-[#0A0D12]"
         >
-          Author
+          ISBN
         </label>
         <Input
-          id="author"
+          id="isbn"
           required
-          placeholder="Masukkan nama penulis..."
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
+          placeholder="Input ISBN number..."
+          value={isbn}
+          onChange={(e) => setIsbn(e.target.value)}
           className="text-14 h-12 w-full rounded-xl border border-[#D5D7DA] bg-white px-4 text-[#0A0D12]"
         />
       </div>
 
       <div className="flex w-full flex-col items-start gap-0.5">
         <label
-          htmlFor="category"
+          htmlFor="authorName"
+          className="text-14 flex h-7 items-center font-bold text-[#0A0D12]"
+        >
+          Author Name
+        </label>
+        <Input
+          id="authorName"
+          required
+          placeholder="Author name..."
+          value={authorName}
+          onChange={(e) => setAuthorName(e.target.value)}
+          className="text-14 h-12 w-full rounded-xl border border-[#D5D7DA] bg-white px-4 text-[#0A0D12]"
+        />
+      </div>
+
+      <div className="flex w-full flex-col items-start gap-0.5">
+        <label
+          htmlFor="categoryId"
           className="text-14 flex h-7 items-center font-bold text-[#0A0D12]"
         >
           Category
         </label>
         <div className="relative w-full">
           <select
-            id="category"
+            id="categoryId"
             required
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
@@ -202,18 +143,58 @@ export function BookForm({
 
       <div className="flex w-full flex-col items-start gap-0.5">
         <label
-          htmlFor="pages"
+          htmlFor="publishedYear"
           className="text-14 flex h-7 items-center font-bold text-[#0A0D12]"
         >
-          Number of Pages
+          Published Year
         </label>
         <Input
-          id="pages"
+          id="publishedYear"
           type="number"
           required
-          placeholder="Masukkan jumlah halaman..."
-          value={pages}
-          onChange={(e) => setPages(e.target.value)}
+          placeholder="Published Year..."
+          value={publishedYear}
+          onChange={(e) => setPublishedYear(e.target.value)}
+          className="text-14 h-12 w-full rounded-xl border border-[#D5D7DA] bg-white px-4 text-[#0A0D12]"
+        />
+      </div>
+
+      <div className="flex w-full flex-col items-start gap-0.5">
+        <label
+          htmlFor="totalCopies"
+          className="text-14 flex h-7 items-center font-bold text-[#0A0D12]"
+        >
+          Total Copies
+        </label>
+        <Input
+          id="totalCopies"
+          type="number"
+          required
+          placeholder="Total copies..."
+          value={totalCopies}
+          onChange={(e) => {
+            setTotalCopies(e.target.value);
+            if (!initialData) setAvailableCopies(e.target.value);
+          }}
+          className="text-14 h-12 w-full rounded-xl border border-[#D5D7DA] bg-white px-4 text-[#0A0D12]"
+        />
+      </div>
+
+      <div className="flex w-full flex-col items-start gap-0.5">
+        <label
+          htmlFor="availableCopies"
+          className="text-14 flex h-7 items-center font-bold text-[#0A0D12]"
+        >
+          Available Copies
+        </label>
+        <Input
+          id="availableCopies"
+          type="number"
+          min="0"
+          required
+          placeholder="Available copies..."
+          value={availableCopies}
+          onChange={(e) => setAvailableCopies(e.target.value)}
           className="text-14 h-12 w-full rounded-xl border border-[#D5D7DA] bg-white px-4 text-[#0A0D12]"
         />
       </div>
@@ -228,7 +209,7 @@ export function BookForm({
         <Textarea
           id="description"
           required
-          placeholder="Masukkan deskripsi buku..."
+          placeholder="Book description..."
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           className="text-14 min-h-[101px] w-full resize-none rounded-xl border border-[#D5D7DA] bg-white p-4 text-[#0A0D12]"
@@ -260,8 +241,9 @@ export function BookForm({
                     <span>Change Image</span>
                     <Input
                       hidden
-                      onChange={handleFileChange}
+                      type="file"
                       accept="image/*"
+                      onChange={handleFileChange}
                     />
                   </InputGroup>
                 </label>
@@ -284,7 +266,7 @@ export function BookForm({
                   <AlertDialogContent className="flex w-113 flex-col gap-8 rounded-2xl border-0 bg-red-300 p-5">
                     <AlertDialogHeader className="m-0 flex flex-col gap-3 p-0 text-left">
                       <AlertDialogTitle className="text-18 m-0 font-quicksand leading-8 font-bold tracking-tight text-[#0A0D12]">
-                        Delete Data
+                        Delete Image
                       </AlertDialogTitle>
                       <AlertDialogDescription className="text-16 m-0 font-quicksand leading-7 font-semibold tracking-tight text-[#0A0D12]">
                         Once deleted, you won&apos;t be able to recover this
@@ -312,13 +294,13 @@ export function BookForm({
               htmlFor="cover-file-upload"
               className="flex h-full w-full cursor-pointer flex-col items-center justify-center gap-2"
             >
-              {/* <Input
+              <Input
                 id="cover-file-upload"
                 type="file"
                 accept="image/*"
                 hidden
                 onChange={handleFileChange}
-              /> */}
+              />
 
               {/* <div className="flex flex-col items-center gap-2"> */}
               <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#D5D7DA] bg-white">
@@ -344,7 +326,7 @@ export function BookForm({
         variant="default"
         type="submit"
         disabled={isPending}
-        className="lg:w-132.25"
+        className="w-90.25 lg:w-132.25"
         // text-16 mt-2 flex h-12 w-full cursor-pointer items-center justify-center rounded-full bg-[#1C65DA] font-bold text-[#FDFDFD] hover:bg-[#154eb3] disabled:opacity-50
       >
         {isPending ? "Saving..." : "Save"}

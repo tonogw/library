@@ -65,7 +65,7 @@ export default function AdminBookList() {
     <div className="min-h-screen w-full bg-white font-['Quicksand']">
       <Navbar />
 
-      <main className="mx-auto max-w-[1200px] py-6">
+      <main className="mx-auto max-w-300 py-6">
         {/* TABS MENU UTAMA */}
         <div className="text-14 mb-8 flex w-fit gap-2 rounded-xl bg-gray-100 p-1.5 font-bold text-gray-500">
           <Link
@@ -173,7 +173,7 @@ export default function AdminBookList() {
         </div>
 
         {/* RESTRUKTURISASI: FIGMA LIST LAYOUT CONTAINER */}
-        <div className="flex w-full max-w-[1200px] flex-col gap-4">
+        <div className="flex w-full max-w-300 flex-col gap-4">
           {isLoading ? (
             <div className="py-20 text-center font-semibold text-gray-400">
               Loading library assets...
@@ -187,17 +187,17 @@ export default function AdminBookList() {
               /* INDIVIDUAL FIGMA CARD COMPONENT */
               <div
                 key={book.id}
-                className="flex h-[178px] w-full flex-row items-center justify-between rounded-2xl border border-gray-100 bg-white p-5 shadow-[0px_0px_20px_rgba(203,202,202,0.25)] transition-all hover:shadow-[0px_0px_25px_rgba(203,202,202,0.4)]"
+                className="flex h-44.5 w-full flex-row items-center justify-between rounded-2xl border border-gray-100 bg-white p-5 shadow-[0px_0px_20px_rgba(203,202,202,0.25)] transition-all hover:shadow-[0px_0px_25px_rgba(203,202,202,0.4)]"
               >
                 {/* Sisi Kiri: Gambar dan Meta Detail */}
                 <div className="flex grow flex-row items-center gap-4">
                   <img
                     src={
-                      book.coverImage ||
-                      "/images/coverBook-psychologyOfMoney.png"
+                      book.coverImage //||
+                      // "/images/coverBook-psychologyOfMoney.png"
                     }
                     alt={book.title}
-                    className="h-[138px] w-[92px] flex-none rounded bg-gray-50 object-cover"
+                    className="h-34.5 w-23 flex-none rounded bg-gray-50 object-cover"
                     // IF BLOCKED CORS: 403/404
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
@@ -208,7 +208,7 @@ export default function AdminBookList() {
                     }}
                   />
 
-                  <div className="flex flex-grow flex-col items-start gap-1">
+                  <div className="flex grow flex-col items-start gap-1">
                     {/* Badge Kategori */}
                     <div className="box-sizing flex h-7 flex-row items-center justify-center rounded-md border border-[#D5D7DA] bg-white px-2">
                       <span className="text-14 font-bold tracking-tight text-[#0A0D12]">
@@ -217,12 +217,12 @@ export default function AdminBookList() {
                     </div>
 
                     {/* Judul Buku */}
-                    <h2 className="text-18 m-0 max-w-[741px] truncate leading-8 font-bold tracking-tight text-[#0A0D12]">
+                    <h2 className="text-18 m-0 max-w-185.25 truncate leading-8 font-bold tracking-tight text-[#0A0D12]">
                       {book.title}
                     </h2>
 
                     {/* Penulis / Author */}
-                    <p className="text-16 m-0 leading-7 font-medium tracking-tight text-[#414651]">
+                    <p className="text-16 m-0 leading-7 font-medium tracking-tight text-neutral-700">
                       {book.author?.name || "Unknown Author"}
                     </p>
 
@@ -246,10 +246,18 @@ export default function AdminBookList() {
                   </Button>
                   <Button
                     variant="outline"
+                    type="button"
                     asChild
-                    className="w-23.75 text-red-500"
+                    className="w-23.75 cursor-pointer text-red-500"
+                    onClick={() => {
+                      alert(
+                        `Fitur delete buku ID ${book.id} segera diaktifkan`,
+                      );
+                      //   handleDeleteClick(book.id);
+                    }}
                   >
-                    <Link to={""}>Delete</Link>
+                    Delete
+                    {/* <Link to={`/admin/books/${book.id}/delete`}>Delete</Link> */}
                   </Button>
                 </div>
               </div>
@@ -259,7 +267,7 @@ export default function AdminBookList() {
 
         {/* FOOTER PAGINATION SYSTEM */}
         {totalEntries > 0 && (
-          <div className="text-14 mt-8 flex max-w-[1200px] flex-col items-center justify-between gap-4 border-t border-gray-50 pt-4 font-semibold text-gray-500 sm:flex-row">
+          <div className="text-14 mt-8 flex max-w-300 flex-col items-center justify-between gap-4 border-t border-gray-50 pt-4 font-semibold text-gray-500 sm:flex-row">
             <div>
               Showing {Math.min((page - 1) * 20 + 1, totalEntries)} to{" "}
               {Math.min(page * 20, totalEntries)} of {totalEntries} entries

@@ -7,6 +7,7 @@ import { Input } from "~/components/ui/input";
 import { Button } from "../ui/button";
 import { Textarea } from "~/components/ui/textarea";
 import { ArrowLeft, ChevronDown, UploadCloud } from "lucide-react";
+import { toast } from "sonner";
 
 export default function BookMaintenance() {
   const { id } = useParams();
@@ -57,14 +58,15 @@ export default function BookMaintenance() {
 
   // 3. Mutasi Aksi Kirim Data (Add / Edit)
   const submitMutation = useMutation({
-    mutationFn: async (formData: FormData) => {
+    mutationFn: async (formData: any) => {
       if (isEditMode) {
         return await api.put(`/api/admin/books/${id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
+          // headers: { "Content-Type": "multipart/form-data" },
         });
       } else {
         return await api.post("/api/admin/books", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
+          // toast.error(error.res?.data?.message),
+          // headers: { "Content-Type": "multipart/form-data" },
         });
       }
     },
@@ -102,7 +104,7 @@ export default function BookMaintenance() {
       <Navbar />
 
       {/* CENTER COMPONENT FORM HOLDER: Frame 1618873993 */}
-      <main className="mx-auto mt-32 flex max-w-[529px] flex-col gap-6 px-4 md:px-0">
+      <main className="mx-auto mt-32 flex max-w-132.25 flex-col gap-6 px-4 md:px-0">
         {/* TOP TITLE HEADER BAR: Frame 1618873992 */}
         <div className="flex h-9 flex-row items-center gap-3">
           <Button
@@ -225,7 +227,7 @@ export default function BookMaintenance() {
               placeholder="Masukkan deskripsi buku..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="text-14 min-h-[101px] w-full resize-none rounded-xl border border-[#D5D7DA] bg-white p-4 leading-relaxed text-[#0A0D12] placeholder-gray-400 focus-visible:ring-gray-300"
+              className="text-14 min-h-25.25 w-full resize-none rounded-xl border border-[#D5D7DA] bg-white p-4 leading-relaxed text-[#0A0D12] placeholder-gray-400 focus-visible:ring-gray-300"
             />
           </div>
 
@@ -235,7 +237,7 @@ export default function BookMaintenance() {
               Cover Image
             </span>
 
-            <label className="box-sizing flex h-[144px] w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#D5D7DA] bg-white transition-colors hover:bg-gray-50/50">
+            <label className="box-sizing flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#D5D7DA] bg-white transition-colors hover:bg-gray-50/50">
               <input
                 type="file"
                 accept="image/*"

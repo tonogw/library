@@ -4,6 +4,8 @@ import api from "~/lib/api/axios";
 import Navbar from "~/components/layout/navbar";
 import { BookForm } from "~/components/shared/book-form"; // Mengimpor dari shared folder
 import { ArrowLeft } from "lucide-react";
+// import { error } from "console";
+import { toast } from "sonner";
 
 export default function BookMaintenance() {
   const { id } = useParams();
@@ -30,13 +32,28 @@ export default function BookMaintenance() {
   });
 
   const submitMutation = useMutation({
-    mutationFn: async (formData: FormData) => {
-      if (isEditMode) return await api.put(`/api/admin/books/${id}`, formData);
-      return await api.post("/api/admin/books", formData);
+    mutationFn: async (formData: any) => {
+      const config = {
+        headers: { "Content-Type": "multipart/form-data" },
+      };
+
+      // EDIT mode
+      if (isEditMode) {
+        return await api.put(`/api/books/${id}`, formData, config);
+      }
+      return await api.post("/api/books", formData, config);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminBooks"] });
+      toast.success(
+        isEditMode ? "Book updated successfully" : "Book added successfully",
+      );
       navigate("/admin/books");
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.message || "Failed process to backend server",
+      );
     },
   });
 

@@ -11,7 +11,8 @@ export default function AdminBookMaintenance() {
   const [isPending, setIsPending] = useState(false);
 
   // Handler khusus untuk membuat (CREATE) buku baru ke backend Railway
-  const handleCreateBook = async (formData: FormData) => {
+  //   const handleCreateBook = async (formData: FormData) => {
+  const handleCreateBook = async (formData: any) => {
     setIsPending(true);
     try {
       // Tembak endpoint POST ke backend Railway untuk menyimpan buku baru

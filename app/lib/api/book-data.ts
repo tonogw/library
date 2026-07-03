@@ -24,22 +24,29 @@ export function BookData({
   categories,
 }: BookFormProps) {
   const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
+  const [isbn, setIsbn] = useState("");
+  const [authorId, setAuthorId] = useState("");
+  const [authorName, setAuthorName] = useState("");
   const [categoryId, setCategoryId] = useState("");
-  const [pages, setPages] = useState("");
+  const [publishedYear, setPublishedYear] = useState("");
   const [description, setDescription] = useState("");
   const [coverImage, setCoverImage] = useState<File | null>(null);
+  const [totalCopies, setTotalCopies] = useState("0");
+  const [availableCopies, setAvailableCopies] = useState("0");
   const [previewUrl, setPreviewUrl] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (initialData) {
       setTitle(initialData.title || "");
-      setAuthor(initialData.author?.name || initialData.author || "");
+
+      setAuthorName(initialData.author?.name || initialData.author || "");
       setCategoryId(initialData.categoryId || "");
-      setPages(String(initialData.publishedYear || ""));
+      setPublishedYear(String(initialData.publishedYear || ""));
       setDescription(initialData.description || "");
       setPreviewUrl(initialData.coverImage || "");
+      setTotalCopies(initialData.totalCopies || "0");
+      setAvailableCopies(initialData.availableCopies || "0");
     }
   }, [initialData]);
 
@@ -97,10 +104,15 @@ export function BookData({
     e.preventDefault();
     const formData = new FormData();
     formData.append("title", title);
-    formData.append("author", author);
+    formData.append("isbn", isbn);
+    formData.append("authorId", authorId);
+    formData.append("authorName", authorName);
     formData.append("categoryId", categoryId);
-    formData.append("publishedYear", pages);
+    formData.append("publishedYear", publishedYear);
     formData.append("description", description);
+    formData.append("totalCopies", totalCopies);
+    formData.append("availableCopies", availableCopies);
     if (coverImage) formData.append("cover", coverImage);
     onSubmit(formData);
-  }
+  };
+}

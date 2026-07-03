@@ -29,7 +29,7 @@ export default [
   //   Admin Book Maintenance
   route("admin/books/:id/preview", "routes/admin/book-preview.tsx"),
   route("admin/books/new", "routes/admin/book-add.tsx"),
-  route("admin/books/:id/edit", "routes/admin/book-maintenance.tsx", {
+  route("admin/books/:id/edit", "routes/admin/book-edit.tsx", {
     id: "admin-book-edit",
   }),
 ] as RouteConfig;
