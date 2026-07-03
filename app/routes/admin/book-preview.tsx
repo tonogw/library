@@ -64,7 +64,8 @@ export default function AdminBookPreview() {
           {/* SISI KIRI: Frame 7 (Container Cover Image) */}
           <div className="flex min-h-124.5 w-full flex-none items-center justify-center rounded-2xl bg-[#E9EAEB] p-2 lg:w-84.25">
             <img
-              src={book.coverImage || "/images/coverBook-psychologyOfMoney.png"}
+              // src={book.coverImage || "/images/coverBook-psychologyOfMoney.png"}
+              src={book.coverImage}
               alt={book.title}
               className="h-120.5 w-full max-w-80.25 rounded-xl object-cover shadow-xs"
               onError={(e) => {

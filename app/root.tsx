@@ -84,7 +84,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <div className="left-1/2 min-h-screen translate-x-1/2 bg-white font-quicksand">
+    <div className="min-h-screen bg-white font-quicksand">
       <main className="mx-auto max-w-[1440px] px-6 py-20 lg:px-[120px]">
         <div className="rounded-2xl border border-red-100 bg-red-50/30 p-8 text-center shadow-xs">
           <h1 className="text-48 m-0 mb-2 font-extrabold text-[#EE1D52]">

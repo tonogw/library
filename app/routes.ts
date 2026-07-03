@@ -26,10 +26,8 @@ export default [
   route("admin/users", "routes/admin/users.tsx"),
   route("admin/categories", "routes/admin/categories.tsx"),
 
-  //   Admin Book Maintenance
+  // Admin Book Maintenance
   route("admin/books/:id/preview", "routes/admin/book-preview.tsx"),
   route("admin/books/new", "routes/admin/book-add.tsx"),
-  route("admin/books/:id/edit", "routes/admin/book-edit.tsx", {
-    id: "admin-book-edit",
-  }),
+  route("admin/books/:id/edit", "routes/admin/book-edit.tsx"),
 ] as RouteConfig;

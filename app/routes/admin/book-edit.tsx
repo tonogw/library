@@ -6,6 +6,7 @@ import { BookForm } from "~/components/shared/book-form"; // Mengimpor dari shar
 import { ArrowLeft } from "lucide-react";
 // import { error } from "console";
 import { toast } from "sonner";
+import { Button } from "~/components/ui/button";
 
 export default function BookMaintenance() {
   const { id } = useParams();
@@ -62,13 +63,21 @@ export default function BookMaintenance() {
       <Navbar />
       <main className="mx-auto flex max-w-[529px] flex-col gap-6 px-4 md:px-0">
         <div className="flex h-9 flex-row items-center gap-3">
-          <button
+          {/* <button
             type="button"
             onClick={() => navigate("/admin/books")}
             className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-[#D5D7DA] hover:bg-gray-50"
           >
             <ArrowLeft className="h-5 w-5 text-[#1E1E1E]" />
-          </button>
+          </button> */}
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/admin/books")}
+            className="h-8 w-8"
+          >
+            <img src="/icons/icon-left-arrow.svg" alt="left arrow" />
+          </Button>
+
           <h1 className="text-24 m-0 font-bold text-[#0A0D12]">
             {isEditMode ? "Edit Book" : "Add Book"}
           </h1>

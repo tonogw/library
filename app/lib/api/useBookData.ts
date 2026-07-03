@@ -2,12 +2,22 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import api from "~/lib/api/axios";
 import { checkOutstandingLoan, deleteBookById } from "./book-maintenance";
+
 // import {  string } from "zod";
 
 interface UseBookDataParams {
   initialData?: any;
   onSubmit: (data: any) => void; //FormData -> any
 }
+
+// const convertFileToBase64 = (file: File): Promise<string> => {
+//   return new Promise((resolve, reject) => {
+//     const reader = new FileReader();
+//     reader.readAsDataURL(file);
+//     reader.onload = () => resolve(reader.result as string);
+//     reader.onerror = (error) => reject(error);
+//   });
+// };
 
 // This function is for adminUser only
 export function useBookData({ initialData, onSubmit }: UseBookDataParams) {
@@ -42,8 +52,32 @@ export function useBookData({ initialData, onSubmit }: UseBookDataParams) {
       setPreviewUrl(initialData.coverImage || "");
       setTotalCopies(initialData.totalCopies || "1");
       setAvailableCopies(initialData.availableCopies || "1");
+
+      if (initialData.coverImage) {
+        setPreviewUrl(initialData.coverImage);
+      } else {
+        setPreviewUrl("");
+      }
     }
   }, [initialData]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setCoverImage(file);
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        setPreviewUrl(reader.result as string);
+      };
+      reader.onerror = (error) => {
+        console.error("Failed read image file:", error);
+      };
+
+      //   setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
 
   // DEBOUNCE EFFECT: Cek duplikasi otomatis ke server saat admin selesai mengetik judul
   useEffect(() => {
@@ -88,14 +122,6 @@ export function useBookData({ initialData, onSubmit }: UseBookDataParams) {
 
     return () => clearTimeout(delayDebounceFn);
   }, [title, initialData]);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setCoverImage(file);
-      setPreviewUrl(URL.createObjectURL(file));
-    }
-  };
 
   const handleDeleteBook = async () => {
     if (!initialData?.id) {
@@ -149,42 +175,66 @@ export function useBookData({ initialData, onSubmit }: UseBookDataParams) {
       return;
     }
 
-    // const jsonPayload = {
+    // if (initialData) {
+    //   let secureCoveringString = "https://picsum.photos/200/300";
+    //   let finalCoverString = "https://picsum.photos/200/300";
 
-    //   title: title,
-    //   description: description,
-    //   isbn: isbn.trim(),
-    //   publishedYear: Number(publishedYear) || 0,
-    //   authorId: 0,
-    //   authorName: authorName || "Unknown",
-    //   categoryId: Number(categoryId),
-    //   totalCopies: Number(totalCopies) || 0,
-    //   availableCopies: Number(availableCopies) || 0,
+    //   if (previewUrl && !previewUrl.includes("via.placeholder.com")) {
+    //     CoveringString = previewUrl;
+    //   }
+
+    //   if (coverImage) {
+    //     try {
+    //       finalCoverString = await convertFileToBase64(coverImage);
+    //     } catch (err) {
+    //       console.error("Failed to convert image:", err);
+    //     }
+    //   } else if (
+    //     previewUrl &&
+    //     !previewUrl.includes("via.placeholder.com") &&
+    //     !previewUrl.includes("blob:")
+    //   ) {
+    // finalCoverString = previewUrl;
+    //   }
+
+    //   const jsonPayload = {
+    //     title: title,
+    //     description: description,
+    //     isbn: isbn.trim(),
+    //     publishedYear: Number(publishedYear) || 0,
+    //     authorId: Number(initialData.authorId) || 0,
+    //     authorName: authorName || "Unknown",
+    //     categoryId: Number(categoryId),
+    //     totalCopies: Number(totalCopies) || 0,
+    //     availableCopies: Number(availableCopies) || 0,
     // Karena backend minta teks string, kita kirim string previewUrl
     // atau URL dummy sementara agar tidak ditolak validasi
-    //   coverImage: previewUrl || "https://picsum.photo/200/300",
-    // };
-
-    // Kirim data objek JSON murni ke handler pembungkus
-    // onSubmit(jsonPayload);
+    // coverImage: previewUrl || "https://picsum.photo/200/300",
+    // coverImage: secureCoveringString,
+    // coverImage: finalCoverString,
     //   };
-
+    // Kirim data objek JSON murni ke handler pembungkus
+    //   onSubmit(jsonPayload);
+    // };
+    // } else {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
     formData.append("isbn", isbn.trim());
-    formData.append("publishedYear", String(Number(publishedYear || "0")));
-    if (coverImage) {
-      formData.append("coverImage", coverImage);
-    } else if (previewUrl) {
-      formData.append("coverImage", previewUrl);
-    }
-    formData.append("authorId", "0");
-    formData.append("authorName", authorName || "Unknown");
+    formData.append("publishedYear", String(Number(publishedYear || "")));
+    formData.append("authorId", "");
+    formData.append("authorName", authorName || "unknown");
     formData.append("categoryId", String(Number(categoryId)));
 
-    formData.append("totalCopies", String(Number(totalCopies)));
-    formData.append("availableCopies", String(Number(availableCopies)));
+    formData.append("totalCopies", String(Number(totalCopies) || 1));
+    formData.append("availableCopies", String(Number(availableCopies) || 1));
+
+    if (coverImage) {
+      formData.append("coverImage", coverImage);
+    }
+    // else if (previewUrl) {
+    //   formData.append("coverImage", previewUrl);
+    // }
 
     onSubmit(formData);
   };

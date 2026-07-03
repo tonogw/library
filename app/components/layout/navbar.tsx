@@ -49,6 +49,7 @@ export default function Navbar() {
         <div className="relative mx-4 hidden w-full max-w-[400px] sm:block">
           <Search className="absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <Input
+            id="search-bar"
             type="text"
             placeholder="Search book"
             value={search}

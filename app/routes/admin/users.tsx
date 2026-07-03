@@ -100,6 +100,7 @@ export default function AdminUserList() {
             />
           </div>
           <Input
+            id="search-name"
             type="text"
             placeholder="Search nama user di sini lalu Enter..."
             value={keyword}

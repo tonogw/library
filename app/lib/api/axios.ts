@@ -1,29 +1,31 @@
-import axios from "axios"
+import axios from "axios";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
+  timeout: 60000,
   headers: {
-    "Content-Type": "application/json",
+    Accept: "application/json",
+    // "Content-Type": "application/json",
   },
-})
+});
 
 // Request interceptor — inject token
 api.interceptors.request.use(
   (config) => {
     const token =
-      typeof window !== "undefined" ? localStorage.getItem("token") : null
+      typeof window !== "undefined" ? localStorage.getItem("token") : null;
     // if (typeof window !== "undefined") {
     // const token = localStorage.getItem("token")
     // if (token && config.headers) {
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    return config
+    return config;
   },
   (error) => {
-    return Promise.reject(error)
-  }
-)
+    return Promise.reject(error);
+  },
+);
 
 // Response interceptor — handle 401
 // api.interceptors.response.use(
@@ -41,4 +43,4 @@ api.interceptors.request.use(
 //   }
 // )
 
-export default api
+export default api;
