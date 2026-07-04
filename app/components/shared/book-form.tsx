@@ -228,19 +228,19 @@ export function BookForm({
             hidden
             onChange={handleFileChange}
           />
-          {/* {previewUrl ? ( */}
           {/* {previewUrl && !previewUrl.includes("via.placeholder.com") ? ( */}
           <div className="box-sizing flex h-full w-full flex-col items-center justify-center gap-4 p-4">
-            <img
-              src={previewUrl}
-              alt="Preview"
-              className="h-24 w-16 rounded object-cover"
-              // onError={(e) => {
-              //   (e.target as HTMLImageElement).style.display = "none";
-              //   //   (e.target as HTMLImageElement).src =
-              //   // "https://picsum.photos/200/300";
-              // }}
-            />
+            {previewUrl && (
+              <img
+                src={previewUrl}
+                alt="Preview"
+                className="h-24 w-16 rounded object-cover"
+                // onError={(e) => {
+                //   (e.target as HTMLImageElement).style.display = "none";
+                //   //   (e.target as HTMLImageElement).src =
+                //   // "https://picsum.photos/200/300";
+              />
+            )}
             <div className="flex gap-2">
               <label htmlFor="book-cover" className="cursor-pointer">
                 <InputGroup className="h-10 w-33.5 justify-center gap-1">

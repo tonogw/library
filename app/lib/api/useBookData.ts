@@ -44,14 +44,14 @@ export function useBookData({ initialData, onSubmit }: UseBookDataParams) {
     if (initialData) {
       setTitle(initialData.title || "");
       setIsbn(initialData.isbn || "");
-      setAuthorId(initialData.authorId || "");
+      setAuthorId(initialData.authorId ?? "");
       setAuthorName(initialData.authorName || initialData.author?.name || "");
       setCategoryId(initialData.categoryId || "");
-      setPublishedYear(initialData.publishedYear || "");
+      setPublishedYear(initialData.publishedYear ?? 0);
       setDescription(initialData.description || "");
       setPreviewUrl(initialData.coverImage || "");
-      setTotalCopies(initialData.totalCopies || "1");
-      setAvailableCopies(initialData.availableCopies || "1");
+      setTotalCopies(initialData.totalCopies ?? 1);
+      setAvailableCopies(initialData.availableCopies ?? 1);
 
       if (initialData.coverImage) {
         setPreviewUrl(initialData.coverImage);
@@ -64,18 +64,19 @@ export function useBookData({ initialData, onSubmit }: UseBookDataParams) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // if (!file) return;
       setCoverImage(file);
 
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        setPreviewUrl(reader.result as string);
-      };
-      reader.onerror = (error) => {
-        console.error("Failed read image file:", error);
-      };
+      //   const reader = new FileReader();
+      //   reader.readAsDataURL(file);
+      //   reader.onload = () => {
+      //     setPreviewUrl(reader.result as string);
+      //   };
+      //   reader.onerror = (error) => {
+      //     console.error("Failed read image file:", error);
+      //   };
 
-      //   setPreviewUrl(URL.createObjectURL(file));
+      setPreviewUrl(URL.createObjectURL(file));
     }
   };
 
@@ -118,7 +119,7 @@ export function useBookData({ initialData, onSubmit }: UseBookDataParams) {
       } finally {
         setCheckingDuplicate(false);
       }
-    }, 60000000); // Memberi jeda 600ms setelah admin berhenti mengetik
+    }, 600); // Memberi jeda 600ms setelah admin berhenti mengetik
 
     return () => clearTimeout(delayDebounceFn);
   }, [title, initialData]);
@@ -175,75 +176,78 @@ export function useBookData({ initialData, onSubmit }: UseBookDataParams) {
       return;
     }
 
-    // if (initialData) {
-    //   let secureCoveringString = "https://picsum.photos/200/300";
-    //   let finalCoverString = "https://picsum.photos/200/300";
+    if (initialData) {
+      //   let secureCoveringString = "https://picsum.photos/200/300";
+      //   let finalCoverString = "https://picsum.photos/200/300";
 
-    //   if (previewUrl && !previewUrl.includes("via.placeholder.com")) {
-    //     CoveringString = previewUrl;
-    //   }
+      //   if (previewUrl && !previewUrl.includes("via.placeholder.com")) {
+      //     CoveringString = previewUrl;
+      //   }
 
-    //   if (coverImage) {
-    //     try {
-    //       finalCoverString = await convertFileToBase64(coverImage);
-    //     } catch (err) {
-    //       console.error("Failed to convert image:", err);
-    //     }
-    //   } else if (
-    //     previewUrl &&
-    //     !previewUrl.includes("via.placeholder.com") &&
-    //     !previewUrl.includes("blob:")
-    //   ) {
-    // finalCoverString = previewUrl;
-    //   }
+      //   if (coverImage) {
+      //     try {
+      //       finalCoverString = await convertFileToBase64(coverImage);
+      //     } catch (err) {
+      //       console.error("Failed to convert image:", err);
+      //     }
+      //   } else if (
+      //     previewUrl &&
+      //     !previewUrl.includes("via.placeholder.com") &&
+      //     !previewUrl.includes("blob:")
+      //   ) {
+      // finalCoverString = previewUrl;
+      //   }
 
-    //   const jsonPayload = {
-    //     title: title,
-    //     description: description,
-    //     isbn: isbn.trim(),
-    //     publishedYear: Number(publishedYear) || 0,
-    //     authorId: Number(initialData.authorId) || 0,
-    //     authorName: authorName || "Unknown",
-    //     categoryId: Number(categoryId),
-    //     totalCopies: Number(totalCopies) || 0,
-    //     availableCopies: Number(availableCopies) || 0,
-    // Karena backend minta teks string, kita kirim string previewUrl
-    // atau URL dummy sementara agar tidak ditolak validasi
-    // coverImage: previewUrl || "https://picsum.photo/200/300",
-    // coverImage: secureCoveringString,
-    // coverImage: finalCoverString,
-    //   };
-    // Kirim data objek JSON murni ke handler pembungkus
-    //   onSubmit(jsonPayload);
-    // };
-    // } else {
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("isbn", isbn.trim());
-    formData.append("publishedYear", String(Number(publishedYear || "")));
-    formData.append("authorId", "");
-    formData.append("authorName", authorName || "unknown");
-    formData.append("categoryId", String(Number(categoryId)));
+      const jsonPayload = {
+        title: title,
+        description: description,
+        isbn: isbn.trim(),
+        publishedYear: Number(publishedYear) || 0,
+        authorId: Number(authorId),
+        authorName: authorName,
+        categoryId: Number(categoryId),
+        totalCopies: Number(totalCopies),
+        availableCopies: Number(availableCopies),
+        // Karena backend minta teks string, kita kirim string previewUrl
+        // atau URL dummy sementara agar tidak ditolak validasi
+        // coverImage: previewUrl || "https://picsum.photo/200/300",
+        // coverImage: secureCoveringString,
+        // coverImage: finalCoverString,
+        coverImage: initialData.coverImage,
+      };
+      // Kirim data objek JSON murni ke handler pembungkus
+      onSubmit(jsonPayload);
+      // };
+    } else {
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("isbn", isbn.trim());
+      formData.append("publishedYear", Number(publishedYear || 0) as any);
+      formData.append("authorId", authorId);
+      formData.append("authorName", authorName);
+      formData.append("categoryId", Number(categoryId || 0) as any);
 
-    formData.append("totalCopies", String(Number(totalCopies) || 1));
-    formData.append("availableCopies", String(Number(availableCopies) || 1));
+      formData.append("totalCopies", Number(totalCopies || 1) as any);
+      formData.append("availableCopies", Number(availableCopies || 1) as any);
 
-    if (coverImage) {
-      formData.append("coverImage", coverImage);
+      if (coverImage) {
+        formData.append("coverImage", coverImage);
+      } else if (previewUrl) {
+        formData.append("coverImage", previewUrl);
+      }
+
+      onSubmit(formData);
+      //   };
     }
-    // else if (previewUrl) {
-    //   formData.append("coverImage", previewUrl);
-    // }
-
-    onSubmit(formData);
   };
-
   return {
     title,
     setTitle,
     isbn,
     setIsbn,
+    authorId,
+    setAuthorId,
     authorName,
     setAuthorName,
     categoryId,

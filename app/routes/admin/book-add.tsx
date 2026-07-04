@@ -34,7 +34,7 @@ export default function AdminBookMaintenance() {
         "Content-Type": isFormData ? "multipart/form-data" : "application/json",
         ...(token ? { Authentication: `Bearer ${token}` } : {}),
       },
-      timeout: 60000,
+      timeout: 600,
     };
 
     try {
