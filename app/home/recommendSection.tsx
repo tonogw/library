@@ -52,7 +52,7 @@ export default function RecommendBooks() {
           by: currentBy,
           categoryId: currentCategoryId || undefined,
           page: currentPage,
-          limit: 8,
+          limit: 10,
         },
       });
       return res.data;
