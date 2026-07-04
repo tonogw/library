@@ -8,7 +8,7 @@ export default [
   route("register", "routes/auth/register.tsx"),
 
   // Buku & Kategori (Bisa diakses Publik/User)
-  route("search-book", "routes/user/books.tsx"),
+  route("user/books", "routes/user/books.tsx"),
   route("books", "routes/books/index.tsx"),
   route("books/:id", "routes/books/$id.tsx"),
   route("categories", "routes/categories/index.tsx"),
@@ -22,7 +22,6 @@ export default [
   route("loans/history", "routes/borrow/history.tsx"),
 
   // Admin Dashboard
-  route("admin/search-book", "routes/admin/books.tsx"),
   route("admin", "routes/admin/dashboard.tsx"),
   route("admin/books", "routes/admin/books.tsx"),
   route("admin/users", "routes/admin/users.tsx"),

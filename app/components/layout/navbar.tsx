@@ -8,6 +8,7 @@ import api from "~/lib/api/axios";
 import { Input } from "../ui/input";
 import { UserProfileSheet } from "../shared/userProfileSheet";
 import { Search } from "lucide-react";
+import SearchBook from "../shared/searchBook-form";
 
 export default function Navbar() {
   const [search, setSearch] = useState("");
@@ -30,6 +31,16 @@ export default function Navbar() {
 
   const totalItems = cartData?.summary?.totalItems ?? 0;
 
+  // const handleSearchTrigger = (value: string) => {
+  //   const params = new URLSearchParams();
+
+  //   if (value.trim()) {
+  //     params.set("search", value);
+  //     params.set("page", "1");
+  //   }
+  //   navigate(`/search-book?${params.toString()}`);
+  // };
+
   return (
     <nav className="sticky top-0 z-50 h-20 border-b border-gray-100 bg-white">
       <div className="mx-auto flex h-20 max-w-[1440px] items-center justify-between bg-white px-6 lg:px-[120px]">
@@ -47,7 +58,8 @@ export default function Navbar() {
 
         {/* SEARCH BAR */}
         <div className="relative mx-4 hidden w-full max-w-[400px] sm:block">
-          <Search className="absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <SearchBook />
+          {/* <Search className="absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <Input
             id="search-bar"
             type="text"
@@ -55,7 +67,7 @@ export default function Navbar() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="text-14 h-10 rounded-full border border-gray-200 bg-white pr-4 pl-11 font-['Quicksand'] focus-visible:ring-gray-300"
-          />
+          /> */}
         </div>
 
         {/* CONTROLS (KANAN) */}

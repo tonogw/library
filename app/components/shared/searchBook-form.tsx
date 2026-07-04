@@ -32,10 +32,11 @@ export default function SearchBook() {
     }
 
     // 3. Tentukan rute berdasarkan role hasil deteksi Redux
-    const targetPath =
-      currentUserRole === "admin" ? "/admin/search-book" : "/search-book";
+    // const targetPath = "/user/books.tsx";
+    //   currentUserRole === "user" ? "/user/search-book" : "/search-book";
 
-    navigate(`${targetPath}?${params.toString()}`);
+    // navigate(`${targetPath}?${params.toString()}`);
+    navigate(`/user/books?${params.toString()}`);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
