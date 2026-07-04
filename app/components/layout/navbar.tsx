@@ -42,7 +42,7 @@ export default function Navbar() {
   // };
 
   return (
-    <nav className="sticky top-0 z-50 h-20 border-b border-gray-100 bg-white">
+    <nav className="sticky top-0 z-50 h-20 border-b border-gray-100 bg-white shadow-sm shadow-gray-100">
       <div className="mx-auto flex h-20 max-w-[1440px] items-center justify-between bg-white px-6 lg:px-[120px]">
         {/* LOGO */}
         <Link to="/" className="flex items-center gap-[11.79px]">
