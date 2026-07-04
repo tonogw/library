@@ -5,7 +5,7 @@ export default function HeroSection() {
   return (
     <section
       id="hero"
-      className="mx-auto h-156 max-w-360 items-center bg-gray-300"
+      className="mx-auto h-156 max-w-360 items-center bg-[#FDFDFD]"
       aria-label="hero-heading"
     >
       <div className="">

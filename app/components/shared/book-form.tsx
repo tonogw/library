@@ -212,7 +212,7 @@ export function BookForm({
           placeholder="Book description..."
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="text-14 min-h-[101px] w-full resize-none rounded-xl border border-[#D5D7DA] bg-white p-4 text-[#0A0D12]"
+          className="text-14 min-h-25.25 w-full resize-none rounded-xl border border-[#D5D7DA] bg-white p-4 text-[#0A0D12]"
         />
       </div>
 
@@ -220,7 +220,7 @@ export function BookForm({
         <span className="text-14 flex h-7 items-center font-bold text-[#0A0D12]">
           Cover Image
         </span>
-        <label className="box-sizing flex h-[244px] w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#D5D7DA] bg-white transition-colors hover:bg-gray-50/50">
+        <label className="box-sizing flex h-61 w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#D5D7DA] bg-white transition-colors hover:bg-gray-50/50">
           <Input
             id="change-image-file"
             type="file"
@@ -273,7 +273,7 @@ export function BookForm({
                     </Button>
                   </AlertDialogTrigger>
 
-                  <AlertDialogContent className="flex w-113 flex-col gap-8 rounded-2xl border-0 bg-red-300 p-5">
+                  <AlertDialogContent className="flex w-113 flex-col gap-8 rounded-2xl border-0 p-5">
                     <AlertDialogHeader className="m-0 flex flex-col gap-3 p-0 text-left">
                       <AlertDialogTitle className="text-18 m-0 font-quicksand leading-8 font-bold tracking-tight text-[#0A0D12]">
                         Delete Image

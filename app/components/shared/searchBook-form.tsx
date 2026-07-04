@@ -55,7 +55,7 @@ export default function SearchBook() {
   };
 
   return (
-    <div className="relative w-full max-w-md">
+    <div className="mx-auto w-full max-w-md items-center">
       <InputGroup className="relative w-full">
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-4">
           <img src="/icons/Search.svg" alt="Search Icon" className="h-5 w-5" />

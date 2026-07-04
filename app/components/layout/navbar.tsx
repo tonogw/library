@@ -43,7 +43,7 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 h-20 border-b border-gray-100 bg-white shadow-sm shadow-gray-100">
-      <div className="mx-auto flex h-20 max-w-[1440px] items-center justify-between bg-white px-6 lg:px-[120px]">
+      <div className="mx-auto flex h-20 max-w-360 items-center justify-between bg-white px-6 lg:px-30">
         {/* LOGO */}
         <Link to="/" className="flex items-center gap-[11.79px]">
           <img
@@ -57,7 +57,7 @@ export default function Navbar() {
         </Link>
 
         {/* SEARCH BAR */}
-        <div className="relative mx-4 hidden w-full max-w-[400px] sm:block">
+        <div className="relative mx-4 hidden w-full max-w-360 sm:block">
           <SearchBook />
           {/* <Search className="absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <Input

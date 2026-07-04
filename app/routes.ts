@@ -22,7 +22,7 @@ export default [
   route("loans/history", "routes/borrow/history.tsx"),
 
   // Admin Dashboard
-  route("admin", "routes/admin/dashboard.tsx"),
+
   route("admin/books", "routes/admin/books.tsx"),
   route("admin/users", "routes/admin/users.tsx"),
   route("admin/categories", "routes/admin/categories.tsx"),
