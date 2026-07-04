@@ -44,7 +44,7 @@ export default function Footer() {
                   key={icon.alt}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`${icon.hoverBg} group relative flex h-14 w-14 items-center justify-center rounded-full border border-neutral-800/40 bg-[#FDFDFD] shadow-xl backdrop-blur-2xl transition-all duration-500`}
+                  className={`${icon.hoverBg} group relative flex h-14 w-14 items-center justify-center rounded-full border bg-[#FDFDFD] shadow-xl backdrop-blur-2xl transition-all duration-500`}
                 >
                   <m.div
                     animate={icon.motion.animate}
@@ -56,14 +56,14 @@ export default function Footer() {
                       alt={icon.alt}
                       width={icon.width}
                       height={icon.height}
-                      className="absolute inset-0 m-auto h-12 w-12 opacity-100 transition-opacity duration-300 group-hover:opacity-0 lg:h-6 lg:w-6"
+                      className="absolute inset-0 m-auto h-12 w-12 opacity-100 transition-opacity duration-300 group-hover:opacity-0 lg:h-12 lg:w-12"
                     />
                     <img
                       src={icon.hoverSrc}
                       alt={icon.alt}
                       width={icon.width}
                       height={icon.height}
-                      className="h-5 w-5 opacity-0 transition-all duration-300 group-hover:opacity-100 lg:h-6 lg:w-6"
+                      className="h-12 w-12 opacity-0 transition-all duration-300 group-hover:opacity-100 lg:h-12 lg:w-12"
                     />
                   </m.div>
                 </Link>

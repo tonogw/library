@@ -111,7 +111,7 @@ export default function HeroSection() {
         <img
           src={heroBackdrop}
           alt="hero picture illustration flanking text"
-          className="h-full w-full max-w-[1440px] object-contain"
+          className="h-full w-full max-w-300 object-contain"
         />
 
         {/* HARUS DIPASANG INITIAL DAN ANIMATE AGAR BERGERAK INFINITY */}
@@ -121,7 +121,7 @@ export default function HeroSection() {
           animate="visible"
           className="absolute inset-0"
         >
-          <img src={Girl} alt="girl" className="absolute top-10 left-10 z-10" />
+          <img src={Girl} alt="girl" className="absolute top-10 left-28 z-10" />
         </m.div>
 
         <m.div
@@ -130,7 +130,7 @@ export default function HeroSection() {
           animate="visible"
           className="absolute inset-0"
         >
-          <img src={BOY} alt="boy" className="absolute top-10 right-10 z-10" />
+          <img src={BOY} alt="boy" className="absolute top-10 right-30 z-10" />
         </m.div>
       </div>
 
