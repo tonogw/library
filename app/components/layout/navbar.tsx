@@ -6,11 +6,23 @@ import { selectIsAuthenticated } from "~/store/authSlice";
 import { queryKeys } from "~/lib/query/keys";
 import api from "~/lib/api/axios";
 import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetTrigger,
+  SheetHeader,
+  SheetTitle,
+  SheetFooter,
+} from "../ui/sheet";
 import { UserProfileSheet } from "../shared/userProfileSheet";
 import { Search } from "lucide-react";
 import SearchBook from "../shared/searchBook-form";
 
 export default function Navbar() {
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [mounted, setMounted] = useState(false); // 2. State untuk melacak mounting browser
   const isAuthenticated = useSelector(selectIsAuthenticated);
@@ -57,7 +69,7 @@ export default function Navbar() {
         </Link>
 
         {/* SEARCH BAR */}
-        <div className="relative mx-4 hidden w-full max-w-360 lg:block">
+        <div className="hidden w-full max-w-360 lg:block">
           <SearchBook />
           {/* <Search className="absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <Input
@@ -68,6 +80,31 @@ export default function Navbar() {
             onChange={(e) => setSearch(e.target.value)}
             className="text-14 h-10 rounded-full border border-gray-200 bg-white pr-4 pl-11 font-['Quicksand'] focus-visible:ring-gray-300"
           /> */}
+        </div>
+        <div className="block lg:hidden">
+          <Sheet open={isMobileSearchOpen} onOpenChange={setIsMobileSearchOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-10 w-10 rounded-full hover:bg-gray-50"
+              >
+                <img
+                  src="/icons/Search.svg"
+                  alt="search"
+                  className="items-left justrify-left"
+                />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-90">
+              <SheetHeader className="mb-6">
+                <SheetTitle>Search Catalogue</SheetTitle>
+              </SheetHeader>
+              <div className="mt-4 w-full">
+                <SearchBook />
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
 
         {/* CONTROLS (KANAN) */}

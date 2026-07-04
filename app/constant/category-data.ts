@@ -19,37 +19,37 @@ export const categoryData: CategoryData[] = [
   {
     category: "Fiction",
     src: FictionIcon,
-    href: "/",
+    href: "/user/books?category=Fiction",
     alt: "Fiction",
   },
   {
     category: "Non-Fiction",
     src: nonFictionIcon,
-    href: "/",
+    href: "/user/books?category=Non-Fiction",
     alt: "Non-Fiction",
   },
   {
     category: "Self-Improvement",
     src: SelfImprovementIcon,
-    href: "/",
+    href: "/user/books?category=Self-Improvement",
     alt: "Self Improvement",
   },
   {
     category: "Finance",
     src: FinanceIcon,
-    href: "/",
+    href: "/user/books?category=Finance",
     alt: "Finance",
   },
   {
     category: "Science & Technology",
     src: TechnologyIcon,
-    href: "/",
+    href: "/user/books?category=Science & Technology",
     alt: "Science & Technology",
   },
   {
     category: "Education",
     src: EducationIcon,
-    href: "/",
+    href: "/user/books?category=Education",
     alt: "Education",
   },
 ];

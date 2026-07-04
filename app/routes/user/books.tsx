@@ -79,7 +79,7 @@ export default function UserBooksPage() {
   return (
     <>
       <Navbar />
-      <div className="mx-auto w-full max-w-300 bg-white px-4 py-8 font-quicksand">
+      <div className="mx-auto w-full max-w-90.25 bg-white px-4 py-8 font-quicksand lg:max-w-300">
         <h1 className="mb-8 text-[36px] leading-11 font-bold tracking-tight text-[#0A0D12]">
           Book List
         </h1>
