@@ -46,6 +46,12 @@ export const categoryData: CategoryData[] = [
     href: "/",
     alt: "Science & Technology",
   },
+  {
+    category: "Education",
+    src: EducationIcon,
+    href: "/",
+    alt: "Education",
+  },
 ];
 
 // ===============================

@@ -15,7 +15,7 @@ export default function Footer() {
       id="footer"
       className="relative z-10 mx-auto flex max-w-360 flex-col justify-between overflow-visible bg-[#FDFDFD] pt-24 pb-12 text-gray-950"
     >
-      <div className="pointer-events-none absolute inset-x-0 -top-[140px] bottom-0 z-0 overflow-visible select-none">
+      <div className="pointer-events-none absolute inset-x-0 -top-35 bottom-0 z-0 overflow-visible select-none">
         <div className="custom-container pointer-events-none relative z-20 mx-auto flex h-full w-full flex-col justify-end px-6 pt-32 pb-12 md:px-12">
           <div className="mb-8 h-px w-full" />
 

@@ -57,7 +57,7 @@ export default function Navbar() {
         </Link>
 
         {/* SEARCH BAR */}
-        <div className="relative mx-4 hidden w-full max-w-360 sm:block">
+        <div className="relative mx-4 hidden w-full max-w-360 lg:block">
           <SearchBook />
           {/* <Search className="absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <Input

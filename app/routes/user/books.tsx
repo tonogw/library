@@ -79,23 +79,23 @@ export default function UserBooksPage() {
   return (
     <>
       <Navbar />
-      <div className="mx-auto w-full max-w-[1200px] bg-white px-4 py-8 font-quicksand">
-        <h1 className="mb-8 text-[36px] leading-[44px] font-bold tracking-tight text-[#0A0D12]">
+      <div className="mx-auto w-full max-w-300 bg-white px-4 py-8 font-quicksand">
+        <h1 className="mb-8 text-[36px] leading-11 font-bold tracking-tight text-[#0A0D12]">
           Book List
         </h1>
 
         <div className="flex flex-col items-start gap-10 md:flex-row">
           {/* SIDEBAR FILTER (KIRI) */}
-          <aside className="flex w-full flex-shrink-0 flex-col gap-6 rounded-[12px] bg-white p-4 py-[16px] shadow-[0px_0px_20px_rgba(203,202,202,0.25)] md:w-[266px]">
+          <aside className="rounded-3 flex w-full shrink-0 flex-col gap-6 bg-white p-4 py-4 shadow-[0px_0px_20px_rgba(203,202,202,0.25)] md:w-66.5">
             <div className="flex flex-col gap-3">
               <span className="text-[16px] font-bold tracking-wider text-[#0A0D12] uppercase opacity-50">
                 FILTER
               </span>
-              <h2 className="-mt-1 text-[18px] leading-[32px] font-bold text-[#0A0D12]">
+              <h2 className="-mt-1 text-[18px] leading-8 font-bold text-[#0A0D12]">
                 Category
               </h2>
 
-              <div className="flex flex-col gap-[10px]">
+              <div className="flex flex-col gap-2.5">
                 {/* Jika API Kategori kosong/error, tampilkan mockup statis bawaan figma */}
                 {cleanCategories.length === 0
                   ? [
@@ -108,7 +108,7 @@ export default function UserBooksPage() {
                     ].map((catName) => (
                       <label
                         key={catName}
-                        className="flex h-[30px] cursor-pointer items-center gap-2"
+                        className="flex h-7.5 cursor-pointer items-center gap-2"
                       >
                         <input
                           type="checkbox"
@@ -118,7 +118,7 @@ export default function UserBooksPage() {
                           }
                           className="h-5 w-5 cursor-pointer rounded-[6px] border-[#A4A7AE] text-[#1C65DA] checked:bg-[#1C65DA] focus:ring-0"
                         />
-                        <span className="text-[16px] leading-[30px] font-medium text-[#0A0D12]">
+                        <span className="text-[16px] leading-7.5 font-medium text-[#0A0D12]">
                           {catName}
                         </span>
                       </label>
@@ -127,7 +127,7 @@ export default function UserBooksPage() {
                     cleanCategories.map((cat: any) => (
                       <label
                         key={cat.id}
-                        className="flex h-[30px] cursor-pointer items-center gap-2"
+                        className="flex h-7.5 cursor-pointer items-center gap-2"
                       >
                         <input
                           type="checkbox"
@@ -135,7 +135,7 @@ export default function UserBooksPage() {
                           onChange={() => handleCategoryChange(String(cat.id))}
                           className="h-5 w-5 cursor-pointer rounded-[6px] border-[#A4A7AE] text-[#1C65DA] checked:bg-[#1C65DA] focus:ring-0"
                         />
-                        <span className="text-[16px] leading-[30px] font-medium text-[#0A0D12]">
+                        <span className="text-[16px] leading-7.5 font-medium text-[#0A0D12]">
                           {cat.name}
                         </span>
                       </label>
@@ -145,7 +145,7 @@ export default function UserBooksPage() {
           </aside>
 
           {/* GRID LIST BUKU (KANAN) */}
-          <main className="w-full flex-shrink-0 md:w-[879px]">
+          <main className="w-full shrink-0 md:w-219.75">
             {isBooksLoading ? (
               <p className="py-10 text-center">Loading books...</p>
             ) : books.length === 0 ? (
@@ -153,7 +153,7 @@ export default function UserBooksPage() {
                 <p className="text-[18px] font-bold text-[#181D27]">
                   Buku tidak ditemukan
                 </p>
-                <p className="text-[14px] text-[#414651]">
+                <p className="text-[14px] text-neutral-700">
                   Coba cari dengan judul atau nama penulis lain.
                 </p>
               </div>
@@ -168,18 +168,18 @@ export default function UserBooksPage() {
                     <Link
                       to={`/books/${book.id}`}
                       key={book.id}
-                      className="flex h-[439.12px] w-full max-w-[204.75px] flex-col overflow-hidden rounded-[12px] bg-white shadow-[0px_0px_20px_rgba(203,202,202,0.25)] transition-transform hover:scale-[1.01]"
+                      className="rounded-3 flex h-[439.12px] w-full max-w-[204.75px] flex-col overflow-hidden bg-white shadow-[0px_0px_20px_rgba(203,202,202,0.25)] transition-transform hover:scale-[1.01]"
                     >
                       <img
                         src={coverUrl}
                         alt={book.title}
-                        className="h-[307.12px] w-full rounded-t-[12px] object-cover"
+                        className="rounded-t-3 h-[307.12px] w-full object-cover"
                       />
-                      <div className="flex h-[132px] flex-col justify-start gap-1 bg-white p-4">
-                        <h3 className="truncate text-[18px] leading-[32px] font-bold text-[#181D27]">
+                      <div className="flex h-33 flex-col justify-start gap-1 bg-white p-4">
+                        <h3 className="truncate text-[18px] leading-8 font-bold text-[#181D27]">
                           {book.title}
                         </h3>
-                        <p className="-mt-1 truncate text-[16px] leading-[30px] font-medium text-[#414651]">
+                        <p className="-mt-1 truncate text-[16px] leading-7.5 font-medium text-neutral-700">
                           {book.authorName}
                         </p>
                         <div className="mt-auto flex items-center gap-1">
@@ -190,7 +190,7 @@ export default function UserBooksPage() {
                           >
                             <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
                           </svg>
-                          <span className="text-[16px] leading-[30px] font-semibold text-[#181D27]">
+                          <span className="text-[16px] leading-7.5 font-semibold text-[#181D27]">
                             4.9
                           </span>
                         </div>

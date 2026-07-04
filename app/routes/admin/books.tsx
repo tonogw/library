@@ -65,7 +65,7 @@ export default function AdminBookList() {
     <div className="min-h-screen w-full bg-white font-['Quicksand']">
       <Navbar />
 
-      <main className="mx-auto max-w-[1200px] py-6">
+      <main className="mx-auto max-w-300 py-6">
         {/* TABS MENU UTAMA */}
         <div className="text-14 mb-8 flex w-fit gap-2 rounded-xl bg-gray-100 p-1.5 font-bold text-gray-500">
           <Link
@@ -105,23 +105,6 @@ export default function AdminBookList() {
         {/* CONTROLS SEARCH & FILTER */}
         <div className="mb-6 flex w-full flex-col items-start justify-between gap-4 md:flex-row md:items-center">
           <div className="relative w-full max-w-md">
-            {/* <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4"> */}
-            {/* <InputGroup */}
-
-            {/* <Search
-                className={`h-5 w-5 ${isFetching ? "animate-pulse text-[#1C65DA]" : "text-gray-400"}`}
-              /> */}
-            {/* </div> */}
-            {/* <Input
-              id="book-search"
-              name="q"
-              type="text"
-              placeholder="Search judul buku / author lalu Enter..."
-              value={keyword}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
-              className="text-14 h-12 w-full rounded-full border border-gray-200 bg-white pr-4 pl-12 text-[#0A0D12] placeholder-gray-400 focus-visible:ring-gray-300"
-            /> */}
             <InputGroup className="relative w-full">
               {/* Container Ikon Gambar Sendiri */}
               <div className="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-4">
@@ -173,21 +156,21 @@ export default function AdminBookList() {
         </div>
 
         {/* RESTRUKTURISASI: FIGMA LIST LAYOUT CONTAINER */}
-        <div className="flex w-full max-w-[1200px] flex-col gap-4">
+        <div className="flex w-full max-w-300 flex-col gap-4">
           {isLoading ? (
             <div className="py-20 text-center font-semibold text-gray-400">
               Loading library assets...
             </div>
           ) : booksList.length === 0 ? (
             <div className="py-20 text-center font-semibold text-gray-400">
-              Tidak ada koleksi buku yang cocok.
+              No book found
             </div>
           ) : (
             booksList.map((book: any) => (
               /* INDIVIDUAL FIGMA CARD COMPONENT */
               <div
                 key={book.id}
-                className="flex h-[178px] w-full flex-row items-center justify-between rounded-2xl border border-gray-100 bg-white p-5 shadow-[0px_0px_20px_rgba(203,202,202,0.25)] transition-all hover:shadow-[0px_0px_25px_rgba(203,202,202,0.4)]"
+                className="flex h-44.5 w-full flex-row items-center justify-between rounded-2xl border border-gray-100 bg-white p-5 shadow-[0px_0px_20px_rgba(203,202,202,0.25)] transition-all hover:shadow-[0px_0px_25px_rgba(203,202,202,0.4)]"
               >
                 {/* Sisi Kiri: Gambar dan Meta Detail */}
                 <div className="flex grow flex-row items-center gap-4">
@@ -197,18 +180,18 @@ export default function AdminBookList() {
                       "/images/coverBook-psychologyOfMoney.png"
                     }
                     alt={book.title}
-                    className="h-[138px] w-[92px] flex-none rounded bg-gray-50 object-cover"
+                    className="h-34.5 w-23 flex-none rounded bg-gray-50 object-cover"
                     // IF BLOCKED CORS: 403/404
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      if (
-                        target.src !== "/images/coverBook-psychologyOfMoney.png"
-                      )
-                        target.src = "/images/coverBook-psychologyOfMoney.png";
-                    }}
+                    // onError={(e) => {
+                    //   const target = e.target as HTMLImageElement;
+                    //   if (
+                    //     target.src !== "/images/coverBook-psychologyOfMoney.png"
+                    //   )
+                    //     target.src = "/images/coverBook-psychologyOfMoney.png";
+                    // }}
                   />
 
-                  <div className="flex flex-grow flex-col items-start gap-1">
+                  <div className="flex grow flex-col items-start gap-1">
                     {/* Badge Kategori */}
                     <div className="box-sizing flex h-7 flex-row items-center justify-center rounded-md border border-[#D5D7DA] bg-white px-2">
                       <span className="text-14 font-bold tracking-tight text-[#0A0D12]">
@@ -217,12 +200,12 @@ export default function AdminBookList() {
                     </div>
 
                     {/* Judul Buku */}
-                    <h2 className="text-18 m-0 max-w-[741px] truncate leading-8 font-bold tracking-tight text-[#0A0D12]">
+                    <h2 className="text-18 m-0 max-w-185.5 truncate leading-8 font-bold tracking-tight text-[#0A0D12]">
                       {book.title}
                     </h2>
 
                     {/* Penulis / Author */}
-                    <p className="text-16 m-0 leading-7 font-medium tracking-tight text-[#414651]">
+                    <p className="text-16 m-0 leading-7 font-medium tracking-tight text-neutral-700">
                       {book.author?.name || "Unknown Author"}
                     </p>
 
@@ -230,7 +213,7 @@ export default function AdminBookList() {
                     <div className="flex h-7 flex-row items-center gap-0.5">
                       <Star className="h-5 w-5 fill-[#FFAB0D] text-[#FFAB0D]" />
                       <span className="text-16 pl-1 leading-7 font-bold tracking-tight text-[#181D27]">
-                        {book.rating || "4.9"}
+                        {book.rating}
                       </span>
                     </div>
                   </div>
@@ -259,7 +242,7 @@ export default function AdminBookList() {
 
         {/* FOOTER PAGINATION SYSTEM */}
         {totalEntries > 0 && (
-          <div className="text-14 mt-8 flex max-w-[1200px] flex-col items-center justify-between gap-4 border-t border-gray-50 pt-4 font-semibold text-gray-500 sm:flex-row">
+          <div className="text-14 mt-8 flex max-w-300 flex-col items-center justify-between gap-4 border-t border-gray-50 pt-4 font-semibold text-gray-500 sm:flex-row">
             <div>
               Showing {Math.min((page - 1) * 20 + 1, totalEntries)} to{" "}
               {Math.min(page * 20, totalEntries)} of {totalEntries} entries
