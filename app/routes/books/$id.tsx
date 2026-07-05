@@ -1,8 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router"; // Menggunakan React Router v7
 import api from "~/lib/api/axios";
 import Navbar from "~/components/layout/navbar";
+import Footer from "~/components/layout/footer";
+import { Button } from "~/components/ui/button";
 
 interface ReviewItem {
   id: number;
@@ -54,13 +56,43 @@ export default function BookDetailPage() {
   }, [id]);
 
   // Fetch data detail buku utama
-  const { data: bookResponse, isLoading } = useQuery({
+  const { data: bookResponse, isLoading: isBookLoading } = useQuery({
     queryKey: ["bookDetail", id],
     queryFn: async () => {
       const res = await api.get(`/api/books/${id}`);
       return res.data;
     },
     enabled: !!id,
+  });
+
+  // Fetch infinite reviewer
+  const {
+    data: reviewsInfiniteData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading: isReviewsLoading,
+  } = useInfiniteQuery({
+    queryKey: ["bookReviewsInfinite", id],
+    queryFn: async ({ pageParam = 1 }) => {
+      const res = await api.get(`/api/books/${id}`, {
+        params: { page: pageParam },
+      });
+      return res.data?.data?.reviews || [];
+    },
+    initialPageParam: 1,
+    enabled: !!id,
+
+    getNextPageParam: (lastPage, allPages) => {
+      const totalFetched = allPages.flat().length;
+      const targetTotal = bookResponse?.data?.reviewCount || 0;
+
+      if (totalFetched >= targetTotal || lastPage.length === 0) {
+        return undefined;
+      }
+      // if (lastPage.length < 10) return undefined;
+      return allPages.length + 1;
+    },
   });
 
   // Ambil data profile pribadi yang sedang login
@@ -87,7 +119,8 @@ export default function BookDetailPage() {
     enabled: !!id,
   });
 
-  if (isLoading) {
+  // if (isLoading) {
+  if (isBookLoading || isReviewsLoading) {
     return (
       <div className="py-20 text-center font-quicksand text-[18px] text-gray-400">
         Loading book details...
@@ -104,10 +137,11 @@ export default function BookDetailPage() {
     );
   }
 
-  const coverUrl = book.coverImage || "/images/book-placeholder.png";
-  const reviewsList = book?.reviews || [];
+  // const reviewsList = book?.reviews || [];
+  const reviewsList = reviewsInfiniteData?.pages.flat() || [];
   const relatedBooks =
     relatedResponse?.data?.books || relatedResponse?.books || [];
+  const coverUrl = book.coverImage || "/images/book-placeholder.png";
 
   const formatDate = (dateString: string) => {
     if (!dateString) return "Recently";
@@ -259,7 +293,8 @@ export default function BookDetailPage() {
             </div>
           ) : (
             <div className="grid w-full grid-cols-1 gap-5 md:grid-cols-2">
-              {reviewsList.slice(0, visibleCount).map((reviewItem) => {
+              {/* {reviewsList.slice(0, visibleCount).map((reviewItem) => { */}
+              {reviewsList.map((reviewItem) => {
                 const isMyReview = reviewItem.userId === currentUserId;
                 const reviewName = reviewItem.user?.name || "Anonymous User";
                 const avatarUrl =
@@ -320,13 +355,17 @@ export default function BookDetailPage() {
           )}
 
           {/* {reviewsList && reviewsList.length > visibleCount && ( */}
-          {book && book.reviewCount > visibleCount && (
-            <button
-              onClick={() => setVisibleCount((prev) => prev + 6)}
+          {/* {book && book.reviewCount > visibleCount && ( */}
+          {hasNextPage && (
+            <Button
+              variant="ghost"
+              // onClick={() => setVisibleCount((prev) => prev + 6)}
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
               className="mx-auto mt-4 h-[48px] w-[200px] rounded-full border border-[#D5D7DA] text-[16px] font-bold tracking-tight text-[#0A0D12] transition-colors hover:bg-gray-50"
             >
-              Load More
-            </button>
+              {isFetchingNextPage ? "Loading more..." : "Load More"}
+            </Button>
           )}
         </div>
 
@@ -382,6 +421,7 @@ export default function BookDetailPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </main>
   );
 }

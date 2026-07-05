@@ -193,6 +193,7 @@ export default function UserBooksPage() {
                           </svg>
                           <span className="text-[16px] leading-7.5 font-semibold text-[#181D27]">
                             {/* 4.9 */}
+                            {book.rating}
                           </span>
                         </div>
                       </div>
