@@ -1,9 +1,9 @@
-import FictionIcon from "../../public/icons/iconCategory-fiction.svg";
-import EducationIcon from "../../public/icons/iconCategory-EducationReference.svg";
-import TechnologyIcon from "../../public/icons/iconCategory-ScienceTechnology.svg";
-import FinanceIcon from "../../public/icons/iconCategory-FinanceBusiness.svg";
-import SelfImprovementIcon from "../../public/icons/iconCategory-SelfImprovement.svg";
-import nonFictionIcon from "../../public/icons/IconCategory-NonFiction.svg";
+import FictionIcon from "/icons/iconCategory-fiction.svg";
+import EducationIcon from "/icons/iconCategory-EducationReference.svg";
+import TechnologyIcon from "/icons/iconCategory-ScienceTechnology.svg";
+import FinanceIcon from "/icons/iconCategory-FinanceBusiness.svg";
+import SelfImprovementIcon from "/icons/iconCategory-SelfImprovement.svg";
+import nonFictionIcon from "/icons/iconCategory-NonFiction.svg";
 // import {StaticImageData} from ""
 
 // HOME PAGE CATEGORY as per Figma

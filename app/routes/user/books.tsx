@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSearchParams, Link } from "react-router"; // Menggunakan React Router v7
 import api from "~/lib/api/axios";
 import Navbar from "~/components/layout/navbar";
+import Footer from "~/components/layout/footer";
 
 interface Book {
   id: string;
@@ -203,6 +204,7 @@ export default function UserBooksPage() {
           </main>
         </div>
       </div>
+      <Footer />
     </>
   );
 }
