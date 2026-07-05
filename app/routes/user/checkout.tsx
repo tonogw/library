@@ -3,15 +3,13 @@ import { useLocation, useNavigate } from "react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "~/lib/api/axios";
 import Navbar from "~/components/layout/navbar";
-import { toast } from "sonner";
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
 
-  // 1. KUNCI PENANGKAP DATA ADAPTIF:
-  // Mengambil selectedItems bawaan lama ATAU langsung menangkap itemIds yang dikirim oleh CartPage Bapak
+  // Tangkap data ID dari keranjang
   const rawState = location.state || {};
   const selectedItems = rawState.selectedItems || [];
   const directItemIds = rawState.itemIds || [];
@@ -23,14 +21,15 @@ export default function CheckoutPage() {
     itemIds = selectedItems.map((item: any) => Number(item.id));
   }
 
-  console.log("📥 Data ID sukses diamankan di Checkout:", itemIds);
-
   const [borrowDuration, setBorrowDuration] = useState<number>(3);
   const [agreeReturn, setAgreeReturn] = useState(false);
   const [agreePolicy, setAgreePolicy] = useState(false);
   const [returnDateStr, setReturnDateStr] = useState("");
 
-  // Ambil Data Profil User dari Swagger /api/me
+  // State baru untuk mengontrol tampilan sukses Figma
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  // Ambil Data Profil User
   const { data: meResponse } = useQuery({
     queryKey: ["checkoutUserProfile"],
     queryFn: async () => {
@@ -53,8 +52,7 @@ export default function CheckoutPage() {
     setReturnDateStr(today.toLocaleDateString("en-US", options));
   }, [borrowDuration]);
 
-  // Proteksi jika data kosong di luar alur navigasi normal
-  if (itemIds.length === 0 && selectedItems.length === 0) {
+  if (itemIds.length === 0 && selectedItems.length === 0 && !isSuccess) {
     return (
       <div className="py-20 text-center font-quicksand text-gray-400">
         No books selected.{" "}
@@ -68,6 +66,70 @@ export default function CheckoutPage() {
     );
   }
 
+  // ==================================================================
+  // RENDER TAMPILAN SUKSES SESUAI EXTRACTED FIGMA CSS
+  // ==================================================================
+  if (isSuccess) {
+    return (
+      <div className="relative min-h-screen w-full bg-[#FDFDFD] font-['Quicksand']">
+        <Navbar />
+
+        {/* Frame 1618873980 */}
+        <div className="absolute top-[260px] left-[calc(50%-638px/2)] flex h-[332.38px] w-[638px] flex-col items-center gap-[32px]">
+          {/* Frame 1618873979 (Lingkaran Luar) */}
+          <div className="box-sizing-border-box flex h-[142.38px] w-[142.38px] flex-row items-center justify-center gap-[6.34px] rounded-[79.26px] border-[0.79px] border-[#E9EAEB] p-[6.34px]">
+            {/* Frame 1618873978 (Lingkaran Tengah) */}
+            <div className="box-sizing-border-box flex h-[129.69px] w-[129.69px] flex-row items-center justify-center gap-[6.34px] rounded-[792.62px] border-[0.79px] border-[#E9EAEB] p-[6.34px]">
+              {/* Frame 1618873977 (Lingkaran Dalam Berwarna Biru) */}
+              <div className="box-sizing-border-box relative flex h-[117.01px] w-[117.01px] flex-row items-center justify-center rounded-[79.26px] bg-[#1C65DA] shadow-md">
+                {/* Check Icon Centang Putih Tebal */}
+                <svg
+                  className="h-[50.64px] w-[50.64px] text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="3"
+                    d="M5 13l4 4L19 7"
+                  ></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Frame 129 */}
+          <div className="flex h-[78px] w-[638px] flex-col items-center gap-[8px]">
+            {/* Borrowing Successful! */}
+            <h1 className="Bill-height-[38px] h-[38px] w-[638px] text-center text-[28px] font-bold tracking-[-0.02em] text-[#0A0D12]">
+              Borrowing Successful!
+            </h1>
+            {/* Subtitle Deskripsi Tanggal */}
+            <p className="line-height-[32px] h-[32px] w-[638px] text-center text-[18px] font-semibold tracking-[-0.02em] text-[#414651]">
+              Your book has been successfully borrowed. Please return it by{" "}
+              <strong className="text-red-500">{returnDateStr}</strong>
+            </p>
+          </div>
+
+          {/* Button Redirect Figma */}
+          <button
+            type="button"
+            onClick={() => navigate("/loans")}
+            className="flex h-[48px] w-[286px] cursor-pointer flex-row items-center justify-center gap-[8px] rounded-[100px] bg-[#1C65DA] p-[8px] shadow-md transition-colors hover:bg-[#154eb3]"
+          >
+            <span className="line-height-[30px] flex h-[30px] w-[136px] items-center justify-center text-center text-[16px] font-bold tracking-[-0.02em] text-[#FDFDFD]">
+              Check My Loans
+            </span>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Tampilan Default Form Checkout (Layout Tidak Berubah)
   return (
     <div className="min-h-screen w-full bg-[#FDFDFD] pb-20 font-['Quicksand']">
       <Navbar />
@@ -75,7 +137,7 @@ export default function CheckoutPage() {
         <h1 className="text-[36px] font-bold text-[#0A0D12]">Checkout</h1>
 
         <div className="grid w-full grid-cols-1 items-start gap-[58px] lg:grid-cols-2">
-          {/* USER INFO & BOOK SELECTIONS */}
+          {/* LEFT: USER & BOOK INFO */}
           <div className="flex w-full max-w-[466px] flex-col gap-8">
             <div className="flex flex-col gap-4">
               <h2 className="text-[24px] font-bold text-[#0A0D12]">
@@ -112,43 +174,37 @@ export default function CheckoutPage() {
                 Book List
               </h2>
               <div className="flex flex-col gap-4">
-                {selectedItems.length > 0 ? (
-                  selectedItems.map((item: any) => {
-                    const b = item.book || {};
-                    return (
-                      <div
-                        key={item.id}
-                        className="flex h-[138px] flex-row items-center gap-4"
-                      >
-                        <img
-                          src={b.coverImage || "/images/book-placeholder.png"}
-                          alt={b.title}
-                          className="h-[138px] w-[92px] rounded-lg object-cover shadow-sm"
-                        />
-                        <div className="flex flex-col gap-1">
-                          <span className="w-fit rounded-[6px] border border-[#D5D7DA] bg-white px-2 text-[14px] font-bold text-[#0A0D12]">
-                            {b.category?.name || "Category"}
-                          </span>
-                          <h3 className="max-w-[280px] truncate text-[20px] font-bold text-[#0A0D12]">
-                            {b.title}
-                          </h3>
-                          <p className="text-[16px] font-medium text-[#414651]">
-                            {b.author?.name || "Unknown Author"}
-                          </p>
-                        </div>
+                {selectedItems.map((item: any) => {
+                  const b = item.book || {};
+                  return (
+                    <div
+                      key={item.id}
+                      className="flex h-[138px] flex-row items-center gap-4"
+                    >
+                      <img
+                        src={b.coverImage || "/images/book-placeholder.png"}
+                        alt={b.title}
+                        className="h-[138px] w-[92px] rounded-lg object-cover shadow-sm"
+                      />
+                      <div className="flex flex-col gap-1">
+                        <span className="w-fit rounded-[6px] border border-[#D5D7DA] bg-white px-2 text-[14px] font-bold text-[#0A0D12]">
+                          {b.category?.name || "Category"}
+                        </span>
+                        <h3 className="max-w-[280px] truncate text-[20px] font-bold text-[#0A0D12]">
+                          {b.title}
+                        </h3>
+                        <p className="text-[16px] font-medium text-[#414651]">
+                          {b.author?.name || "Unknown Author"}
+                        </p>
                       </div>
-                    );
-                  })
-                ) : (
-                  <div className="rounded-xl border border-dashed p-2 text-center text-[16px] font-medium text-gray-500 italic">
-                    Selected items loaded successfully ({itemIds.length} items)
-                  </div>
-                )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
 
-          {/* FORM BORROW BORROW COMPLETE BORROW REQUEST */}
+          {/* RIGHT: FORM BORROW REQUEST */}
           <div className="flex w-full max-w-[478px] flex-col gap-6 rounded-[20px] border border-gray-50 bg-white p-5 shadow-[0px_0px_20px_rgba(203,202,202,0.25)]">
             <h2 className="text-[28px] font-bold text-[#0A0D12]">
               Complete Your Borrow Request
@@ -230,7 +286,6 @@ export default function CheckoutPage() {
               </label>
             </div>
 
-            {/* CONFIRM & BORROW BUTTON - ASYNC/AWAIT SUKSES TEPAT WAKTU */}
             <button
               type="button"
               disabled={!agreeReturn || !agreePolicy}
@@ -238,24 +293,13 @@ export default function CheckoutPage() {
                 e.preventDefault();
                 e.stopPropagation();
 
-                if (itemIds.length === 0) {
-                  alert(
-                    "No items selected for checkout. Please go back to your cart",
-                  );
-                  return;
-                }
-
                 try {
-                  console.log("Express checkout, send itemIds:", itemIds);
-
-                  // FIX SINKRONISASI TANGGAL SWAGGER: Wajib ISO YYYY-MM-DD
                   const today = new Date();
                   const yyyy = today.getFullYear();
                   const mm = String(today.getMonth() + 1).padStart(2, "0");
                   const dd = String(today.getDate()).padStart(2, "0");
                   const formattedDate = `${yyyy}-${mm}-${dd}`;
 
-                  // Tembak langsung memakai Axios murni
                   const res = await api.post("/api/loans/from-cart", {
                     itemIds: itemIds,
                     days: borrowDuration,
@@ -267,19 +311,17 @@ export default function CheckoutPage() {
                     res.status === 200 ||
                     res.status === 201
                   ) {
-                    alert("Books borrowed successfully!");
-                    // Refresh data keranjang di memori agar item yang terpinjam hilang
+                    // Refresh angka navbar secara global
                     queryClient.invalidateQueries({
                       queryKey: ["userCartItems"],
                     });
-                    // Navigasi langsung menuju rute list pinjaman utama
-                    navigate("/loans");
+                    // Pemicu perpindahan ke view sukses Figma
+                    setIsSuccess(true);
                   }
                 } catch (error: any) {
-                  console.error("Checkout error backend detail:", error);
-                  const serverMessage = error.response?.data?.message;
                   alert(
-                    serverMessage || "Confirmed failed, stock empty on server",
+                    error.response?.data?.message ||
+                      "Confirmed failed, stock empty on server",
                   );
                 }
               }}
