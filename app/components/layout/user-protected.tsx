@@ -10,10 +10,16 @@ export default function UserProtectedLayout() {
       const res = await api.get("/api/me");
       return res.data;
     },
-    retry: false, // Jika tidak ada token (guest), langsung stop
+    retry: false,
+    staleTime: 5000, // Menjaga cache data login selama 5 detik agar tidak flash menendang user
   });
 
+  // Back-up check: Jika di localStorage masih ada token/sesi, jangan lempar dulu saat loading
+  const hasLocalToken =
+    typeof window !== "undefined" && !!localStorage.getItem("token");
+
   if (isLoading) {
+    if (hasLocalToken) return <Outlet />; // Biarkan tetap render jika token lokal terdeteksi aman
     return (
       <div className="py-20 text-center font-['Quicksand'] font-bold text-gray-400">
         Verifying user access...
@@ -21,15 +27,13 @@ export default function UserProtectedLayout() {
     );
   }
 
-  const userRole = meResponse?.data?.role; // Menghasilkan "USER" atau "ADMIN"
+  const userRole = meResponse?.data?.role;
 
-  // 💥 KUNCI RESTRIKSI MEMBER:
-  // Jika tidak punya akun (Guest), tendang paksa ke halaman /login agar mereka masuk dulu
-  if (!userRole) {
-    console.warn("⛔ Akses ditolak! Halaman ini khusus member terdaftar.");
+  // KUNCIL RESTRIKSI: Jika server menyatakan tidak login DAN tidak ada token lokal
+  if (!userRole && !hasLocalToken) {
+    console.warn("⛔ Akses ditolak! Silakan login terlebih dahulu.");
     return <Navigate to="/login" replace />;
   }
 
-  // Jika dia adalah USER (atau ADMIN yang sedang dibolehkan lewat), silakan masuk ke halaman transaksi
   return <Outlet />;
 }

@@ -7,19 +7,17 @@ import {
 
 export default [
   index("routes/home.tsx"),
-
   // Auth
   route("login", "routes/auth/login.tsx"),
   route("register", "routes/auth/register.tsx"),
 
   // Buku & Kategori (Bisa diakses Publik/User)
-  layout("layout/user-protected.tsx", [
-    route("user/books", "routes/user/books.tsx"),
-    route("books", "routes/books/index.tsx"),
-    route("books/:id", "routes/books/$id.tsx"),
-    route("categories", "routes/categories/index.tsx"),
-    route("categories/:id", "routes/categories/$id.tsx"),
-
+  route("user/books", "routes/user/books.tsx"),
+  route("books", "routes/books/index.tsx"),
+  route("books/:id", "routes/books/$id.tsx"),
+  route("categories", "routes/categories/index.tsx"),
+  route("categories/:id", "routes/categories/$id.tsx"),
+  layout("components/layout/user-protected.tsx", [
     // Fitur User (Profile, Cart, Loans)
     route("profile", "routes/user/profile.tsx"),
     route("user/cart", "routes/user/cart.tsx"),
@@ -29,7 +27,7 @@ export default [
   ]),
 
   // Admin Dashboard
-  layout("layout/admin-protected.tsx", [
+  layout("components/layout/admin-protected.tsx", [
     route("admin/books", "routes/admin/books.tsx"),
     route("admin/users", "routes/admin/users.tsx"),
     route("admin/categories", "routes/admin/categories.tsx"),
