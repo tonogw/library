@@ -41,8 +41,8 @@ export default function Navbar() {
     enabled: isAuthenticated && mounted, // Hanya ambil data jika sudah mounted
   });
 
-  const totalItems = cartData?.summary?.totalItems ?? 0;
-
+  // const totalItems = cartData?.summary?.totalItems ?? 0;
+  const totalItems = cartData?.data?.itemCount ?? 0;
   // const handleSearchTrigger = (value: string) => {
   //   const params = new URLSearchParams();
 
