@@ -1,4 +1,9 @@
-import { type RouteConfig, route, index } from "@react-router/dev/routes";
+import {
+  type RouteConfig,
+  route,
+  index,
+  layout,
+} from "@react-router/dev/routes";
 
 export default [
   index("routes/home.tsx"),
@@ -8,27 +13,31 @@ export default [
   route("register", "routes/auth/register.tsx"),
 
   // Buku & Kategori (Bisa diakses Publik/User)
-  route("user/books", "routes/user/books.tsx"),
-  route("books", "routes/books/index.tsx"),
-  route("books/:id", "routes/books/$id.tsx"),
-  route("categories", "routes/categories/index.tsx"),
-  route("categories/:id", "routes/categories/$id.tsx"),
+  layout("layout/user-protected.tsx", [
+    route("user/books", "routes/user/books.tsx"),
+    route("books", "routes/books/index.tsx"),
+    route("books/:id", "routes/books/$id.tsx"),
+    route("categories", "routes/categories/index.tsx"),
+    route("categories/:id", "routes/categories/$id.tsx"),
 
-  // Fitur User (Profile, Cart, Loans)
-  route("profile", "routes/user/profile.tsx"),
-  route("user/cart", "routes/user/cart.tsx"),
-  route("user/checkout", "routes/user/checkout.tsx"),
-  route("loans", "routes/borrow/index.tsx"),
-  route("loans/history", "routes/borrow/history.tsx"),
+    // Fitur User (Profile, Cart, Loans)
+    route("profile", "routes/user/profile.tsx"),
+    route("user/cart", "routes/user/cart.tsx"),
+    route("user/checkout", "routes/user/checkout.tsx"),
+    route("loans", "routes/borrow/index.tsx"),
+    route("loans/history", "routes/borrow/history.tsx"),
+  ]),
 
   // Admin Dashboard
+  layout("layout/admin-protected.tsx", [
+    route("admin/books", "routes/admin/books.tsx"),
+    route("admin/users", "routes/admin/users.tsx"),
+    route("admin/categories", "routes/admin/categories.tsx"),
 
-  route("admin/books", "routes/admin/books.tsx"),
-  route("admin/users", "routes/admin/users.tsx"),
-  route("admin/categories", "routes/admin/categories.tsx"),
-
-  // Admin Book Maintenance
-  route("admin/books/:id/preview", "routes/admin/book-preview.tsx"),
-  route("admin/books/new", "routes/admin/book-add.tsx"),
-  route("admin/books/:id/edit", "routes/admin/book-edit.tsx"),
+    route("admin/loans", "routes/admin/book-loans.tsx"),
+    // Admin Book Maintenance
+    route("admin/books/:id/preview", "routes/admin/book-preview.tsx"),
+    route("admin/books/new", "routes/admin/book-add.tsx"),
+    route("admin/books/:id/edit", "routes/admin/book-edit.tsx"),
+  ]),
 ] as RouteConfig;
