@@ -1,23 +1,25 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link, useSearchParams } from "react-router";
+import { href, Link, useSearchParams, useNavigate } from "react-router";
+import { Button } from "~/components/ui/button";
 import api from "~/lib/api/axios";
+import type { RecommendBook } from "~/types";
 
-interface RecommendBook {
-  id: number;
-  title: string;
-  description: string;
-  coverImage: string;
-  rating: number;
-  reviewCount: number;
-  author: {
-    name: string;
-  };
-  category: {
-    id: number;
-    name: string;
-  };
-}
+// interface RecommendBook {
+//   id: number;
+//   title: string;
+//   description: string;
+//   coverImage: string;
+//   rating: number;
+//   reviewCount: number;
+//   author: {
+//     name: string;
+//   };
+//   category: {
+//     id: number;
+//     name: string;
+//   };
+// }
 
 export default function RecommendBooks() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -26,7 +28,7 @@ export default function RecommendBooks() {
   const currentBy = searchParams.get("by") || "rating";
   const currentCategoryId = searchParams.get("categoryId") || "";
   const currentPage = parseInt(searchParams.get("page") || "1", 10);
-
+  const navigate = useNavigate();
   // Mengambil daftar kategori untuk dropdown filter pencarian
   const { data: categoriesResponse } = useQuery({
     queryKey: ["categories"],
@@ -156,9 +158,14 @@ export default function RecommendBooks() {
               const coverUrl =
                 book.coverImage || "/images/book-placeholder.png";
               return (
-                <Link
-                  to={`/books/${book.id}`}
+                <Button
+                  // variant="ghost"
+                  type="button"
                   key={book.id}
+                  onClick={() => {
+                    console.log(book.id);
+                    navigate(`/books/${book.id}`);
+                  }}
                   className="flex h-[468px] w-full max-w-[224px] flex-col overflow-hidden rounded-[12px] bg-white shadow-[0px_0px_20px_rgba(203,202,202,0.25)] transition-transform hover:scale-[1.01]"
                 >
                   {/* Image Area Cover (Lebar: 224px, Tinggi: 336px) */}
@@ -173,7 +180,7 @@ export default function RecommendBooks() {
                     <h3 className="truncate text-[18px] leading-[32px] font-bold tracking-tight text-[#181D27]">
                       {book.title}
                     </h3>
-                    <p className="-mt-1 truncate text-[16px] leading-[30px] font-medium tracking-tight text-[#414651]">
+                    <p className="-mt-1 truncate text-[16px] leading-[30px] font-medium tracking-tight text-neutral-700">
                       {book.author?.name || "Unknown Author"}
                     </p>
 
@@ -194,7 +201,7 @@ export default function RecommendBooks() {
                       </span>
                     </div>
                   </div>
-                </Link>
+                </Button>
               );
             })}
           </div>

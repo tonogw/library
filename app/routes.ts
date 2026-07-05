@@ -16,8 +16,8 @@ export default [
 
   // Fitur User (Profile, Cart, Loans)
   route("profile", "routes/user/profile.tsx"),
-  route("cart", "routes/user/cart.tsx"),
-  route("checkout", "routes/user/checkout.tsx"),
+  route("user/cart", "routes/user/cart.tsx"),
+  route("user/checkout", "routes/user/checkout.tsx"),
   route("loans", "routes/borrow/index.tsx"),
   route("loans/history", "routes/borrow/history.tsx"),
 

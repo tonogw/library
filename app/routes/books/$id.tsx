@@ -1,54 +1,66 @@
-import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+import {
+  useQuery,
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router"; // Menggunakan React Router v7
 import api from "~/lib/api/axios";
 import Navbar from "~/components/layout/navbar";
 import Footer from "~/components/layout/footer";
 import { Button } from "~/components/ui/button";
+import { toast } from "sonner";
+import { useInstantBorrow } from "~/lib/query/useBorrow";
 
-interface ReviewItem {
-  id: number;
-  star: number;
-  comment: string;
-  userId: number;
-  bookId: number;
-  createdAt: string;
-  user: {
-    id: number;
-    name: string;
-  };
-}
+import type { BookDetailData } from "~/types";
+import type { ReviewItem } from "~/types";
 
-interface BookDetailData {
-  id: number;
-  title: string;
-  description: string;
-  isbn: string;
-  publishedYear: number;
-  coverImage?: string;
-  rating: number;
-  reviewCount: number;
-  totalCopies: number;
-  availableCopies: number;
-  borrowCount: number;
-  createdAt: string;
-  updatedAt: string;
-  author?: {
-    id: number;
-    name: string;
-    bio: string;
-  };
-  category?: {
-    id: number;
-    name: string;
-  };
-  reviews?: ReviewItem[];
-}
+// interface ReviewItem {
+//   id: number;
+//   star: number;
+//   comment: string;
+//   userId: number;
+//   bookId: number;
+//   createdAt: string;
+//   user: {
+//     id: number;
+//     name: string;
+//   };
+// }
+
+// interface BookDetailData {
+//   id: number;
+//   title: string;
+//   description: string;
+//   isbn: string;
+//   publishedYear: number;
+//   coverImage?: string;
+//   rating: number;
+//   reviewCount: number;
+//   totalCopies: number;
+//   availableCopies: number;
+//   borrowCount: number;
+//   createdAt: string;
+//   updatedAt: string;
+//   author?: {
+//     id: number;
+//     name: string;
+//     bio: string;
+//   };
+//   category?: {
+//     id: number;
+//     name: string;
+//   };
+//   reviews?: ReviewItem[];
+// }
 
 export default function BookDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [visibleCount, setVisibleCount] = useState(6);
+  const borrowInstantMutation = useInstantBorrow(id);
 
   // Jika ID buku berubah dari rekomendasi bawah, kembalikan batas pagination awal ke 6 review
   useEffect(() => {
@@ -59,10 +71,23 @@ export default function BookDetailPage() {
   const { data: bookResponse, isLoading: isBookLoading } = useQuery({
     queryKey: ["bookDetail", id],
     queryFn: async () => {
+      console.log("Fetching", id);
       const res = await api.get(`/api/books/${id}`);
+
+      console.log(res);
       return res.data;
     },
     enabled: !!id,
+  });
+
+  // Ambil data profile pribadi yang sedang login
+  console.log("id =", id);
+  const { data: meResponse } = useQuery({
+    queryKey: ["currentUserProfile"],
+    queryFn: async () => {
+      const res = await api.get("/api/me");
+      return res.data;
+    },
   });
 
   // Fetch infinite reviewer
@@ -95,32 +120,48 @@ export default function BookDetailPage() {
     },
   });
 
-  // Ambil data profile pribadi yang sedang login
-  const { data: meResponse } = useQuery({
-    queryKey: ["currentUserProfile"],
-    queryFn: async () => {
-      const res = await api.get("/api/me");
-      return res.data;
-    },
-  });
-
-  const currentUserId = meResponse?.data?.profile?.id;
-  const currentUserPhoto = meResponse?.data?.profile?.profilePhoto;
-
   // Fetch rekomendasi buku terkait
   const { data: relatedResponse } = useQuery({
     queryKey: ["relatedBooks", id],
     queryFn: async () => {
       const res = await api.get("/api/books", {
-        params: { limit: 5 },
+        params: { limit: 6 },
       });
       return res.data;
     },
     enabled: !!id,
   });
 
-  // if (isLoading) {
-  if (isBookLoading || isReviewsLoading) {
+  const addToCartMutation = useMutation({
+    mutationFn: async () => {
+      //   console.log("mutation start")
+      //   // return await api.post("/api/cart/items", {
+
+      const res = await api.post("/api/cart/items", {
+        bookId: Number(id),
+      });
+      //   console.log(res)
+      return res.data;
+    },
+    // mutationFn:async ()=> {
+    //   return await api.post("/api/cart/items", {
+    //     bookId: Number(id),
+    //   });
+    // },
+
+    onSuccess: (resData) => {
+      toast.success(resData?.message || "Successfully added to cart!");
+      queryClient.invalidateQueries({ queryKey: ["userCartItems"] });
+    },
+    onError: (error: any) => {
+      const errorMsg =
+        error.response?.data?.message || "Failed to add to cart.";
+      toast.error(errorMsg);
+    },
+  });
+
+  if (isBookLoading) {
+    // if (isBookLoading || isReviewsLoading) {
     return (
       <div className="py-20 text-center font-quicksand text-[18px] text-gray-400">
         Loading book details...
@@ -136,6 +177,9 @@ export default function BookDetailPage() {
       </div>
     );
   }
+
+  const currentUserId = meResponse?.data?.profile?.id;
+  const currentUserPhoto = meResponse?.data?.profile?.profilePhoto;
 
   // const reviewsList = book?.reviews || [];
   const reviewsList = reviewsInfiniteData?.pages.flat() || [];
@@ -251,11 +295,51 @@ export default function BookDetailPage() {
               </div>
 
               <div className="mt-4 flex gap-3">
-                <button className="h-[48px] w-[200px] rounded-full border border-[#D5D7DA] text-[16px] font-bold tracking-tight text-[#0A0D12] transition-colors hover:bg-gray-50">
-                  Add to Cart
-                </button>
-                <button className="h-[48px] w-[200px] rounded-full bg-[#1C65DA] text-[16px] font-bold tracking-tight text-white transition-colors hover:bg-[#154eb3]">
-                  Borrow Book
+                {/* ADD TO CART */}
+                <Button
+                  variant="default"
+                  type="button"
+                  onClick={() => {
+                    console.log("Navigasi ke halaman keranjang...");
+                    navigate("/user/cart");
+                  }}
+                  // onClick={(e) => {
+                  //   e.preventDefault();
+                  //   e.stopPropagation();
+
+                  //   console.log("tombol add to cart di klik, mengirim ID:", id);
+                  //   addToCartMutation.mutate();
+                  // }}
+                  // disabled={
+                  //   addToCartMutation.isPending || book.availableCopies === 0
+                  // }
+                  className="h-[48px] w-[200px] cursor-pointer rounded-full border border-[#D5D7DA] text-[16px] font-bold tracking-tight text-[#0A0D12] transition-colors hover:bg-gray-50"
+                >
+                  {addToCartMutation.isPending ? "Adding..." : "Add to Cart"}
+                </Button>
+                {/* BORROW BOOK */}
+                <button
+                  // variant="default"
+                  type="button"
+                  onClick={() => {
+                    console.log("Navigasi ke halaman daftar pinjaman ...");
+                    navigate("/loans/${}");
+                  }}
+                  // onClick={(e) => {
+                  //   e.preventDefault();
+                  //   e.stopPropagation();
+                  //   borrowInstantMutation.mutate();
+                  // }}
+
+                  // disabled={
+                  //   borrowInstantMutation.isPending ||
+                  //   book.availableCopies === 0
+                  // }
+                  className="h-[48px] w-[200px] rounded-full bg-[#1C65DA] text-[16px] font-bold tracking-tight text-white transition-colors hover:bg-[#154eb3]"
+                >
+                  {borrowInstantMutation.isPending
+                    ? "Borrowing ... "
+                    : "Borrow Book"}
                 </button>
               </div>
             </div>
