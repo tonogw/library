@@ -17,8 +17,10 @@ export default [
   route("books/:id", "routes/books/$id.tsx"),
   route("categories", "routes/categories/index.tsx"),
   route("categories/:id", "routes/categories/$id.tsx"),
+  route("authors/:id", "routes/authors/$id.tsx"),
+
+  // Fitur User (Profile, Cart, Loans)
   layout("components/layout/user-protected.tsx", [
-    // Fitur User (Profile, Cart, Loans)
     route("profile", "routes/user/profile.tsx"),
     route("user/cart", "routes/user/cart.tsx"),
     route("user/checkout", "routes/user/checkout.tsx"),
