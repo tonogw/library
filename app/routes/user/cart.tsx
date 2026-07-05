@@ -164,8 +164,18 @@ export default function CartPage() {
                 </span>
               </div>
               <button
-                onClick={handleGoToCheckout}
-                disabled={checkedCartItemIds.length === 0}
+                type="button"
+                onClick={() => {
+                  console.log(
+                    "push item ID flow to checkout:",
+                    checkedCartItemIds,
+                  );
+                  navigate("/user/checkout", {
+                    state: { itemIds: checkedCartItemIds },
+                  });
+                }}
+                // onClick={handleGoToCheckout}
+                // disabled={checkedCartItemIds.length === 0}
                 className="h-[48px] w-full rounded-full bg-[#1C65DA] text-[16px] font-bold text-white transition-colors hover:bg-[#154eb3] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Borrow Book

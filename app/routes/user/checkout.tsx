@@ -1,17 +1,29 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "~/lib/api/axios";
 import Navbar from "~/components/layout/navbar";
 import { toast } from "sonner";
 
 export default function CheckoutPage() {
-  const location = useLocation();
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
 
-  // Membaca item yang diseleksi dari halaman keranjang belanja server sebelumnya
-  const selectedItems = location.state?.selectedItems || [];
+  // 1. KUNCI PENANGKAP DATA ADAPTIF:
+  // Mengambil selectedItems bawaan lama ATAU langsung menangkap itemIds yang dikirim oleh CartPage Bapak
+  const rawState = location.state || {};
+  const selectedItems = rawState.selectedItems || [];
+  const directItemIds = rawState.itemIds || [];
+
+  let itemIds: number[] = [];
+  if (directItemIds.length > 0) {
+    itemIds = directItemIds.map((id: any) => Number(id));
+  } else if (selectedItems.length > 0) {
+    itemIds = selectedItems.map((item: any) => Number(item.id));
+  }
+
+  console.log("📥 Data ID sukses diamankan di Checkout:", itemIds);
 
   const [borrowDuration, setBorrowDuration] = useState<number>(3);
   const [agreeReturn, setAgreeReturn] = useState(false);
@@ -41,71 +53,8 @@ export default function CheckoutPage() {
     setReturnDateStr(today.toLocaleDateString("en-US", options));
   }, [borrowDuration]);
 
-  // MUTATION PEMINJAMAN DENGAN ENGINE OPTIMISTIC UI
-  const borrowMutation = useMutation({
-    mutationFn: async () => {
-      const promises = selectedItems.map((item: any) =>
-        api.post("/api/borrows", {
-          bookId: Number(item.book?.id || item.bookId),
-          durationDays: borrowDuration,
-        }),
-      );
-      return Promise.all(promises);
-    },
-    // Engine Optimistic UI: Kurangi stok copies di layar secara instan sebelum server menjawab
-    onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["bookDetail"] });
-      const previousDetails: Record<string, any> = {};
-
-      selectedItems.forEach((item: any) => {
-        const bookId = String(item.book?.id || item.bookId);
-        const queryKey = ["bookDetail", bookId];
-        const previousData = queryClient.getQueryData(queryKey);
-
-        if (previousData) {
-          previousDetails[bookId] = previousData;
-          queryClient.setQueryData(queryKey, (old: any) => {
-            if (!old || !old.data) return old;
-            return {
-              ...old,
-              data: {
-                ...old.data,
-                availableCopies: Math.max(0, old.data.availableCopies - 1),
-              },
-            };
-          });
-        }
-      });
-
-      return { previousDetails };
-    },
-    // Jika server gagal, lakukan rollback stok asli ke cache semula
-    onError: (err, variables, context: any) => {
-      if (context?.previousDetails) {
-        Object.keys(context.previousDetails).forEach((id) => {
-          queryClient.setQueryData(
-            ["bookDetail", id],
-            context.previousDetails[id],
-          );
-        });
-      }
-      toast.error("Borrow failed. Check available book stock.");
-    },
-    onSuccess: () => {
-      toast.success("Books successfully borrowed!");
-      // Bersihkan keranjang belanja di sisi server (biasanya backend otomatis menghapus item yang sukses dipinjam)
-      queryClient.invalidateQueries({ queryKey: ["userCartItems"] });
-      navigate("/");
-    },
-    onSettled: () => {
-      selectedItems.forEach((item: any) => {
-        const bookId = String(item.book?.id || item.bookId);
-        queryClient.invalidateQueries({ queryKey: ["bookDetail", bookId] });
-      });
-    },
-  });
-
-  if (selectedItems.length === 0) {
+  // Proteksi jika data kosong di luar alur navigasi normal
+  if (itemIds.length === 0 && selectedItems.length === 0) {
     return (
       <div className="py-20 text-center font-quicksand text-gray-400">
         No books selected.{" "}
@@ -163,32 +112,38 @@ export default function CheckoutPage() {
                 Book List
               </h2>
               <div className="flex flex-col gap-4">
-                {selectedItems.map((item: any) => {
-                  const b = item.book || {};
-                  return (
-                    <div
-                      key={item.id}
-                      className="flex h-[138px] flex-row items-center gap-4"
-                    >
-                      <img
-                        src={b.coverImage || "/images/book-placeholder.png"}
-                        alt={b.title}
-                        className="h-[138px] w-[92px] rounded-lg object-cover shadow-sm"
-                      />
-                      <div className="flex flex-col gap-1">
-                        <span className="w-fit rounded-[6px] border border-[#D5D7DA] bg-white px-2 text-[14px] font-bold text-[#0A0D12]">
-                          {b.category?.name || "Category"}
-                        </span>
-                        <h3 className="max-w-[280px] truncate text-[20px] font-bold text-[#0A0D12]">
-                          {b.title}
-                        </h3>
-                        <p className="text-[16px] font-medium text-[#414651]">
-                          {b.author?.name || "Unknown Author"}
-                        </p>
+                {selectedItems.length > 0 ? (
+                  selectedItems.map((item: any) => {
+                    const b = item.book || {};
+                    return (
+                      <div
+                        key={item.id}
+                        className="flex h-[138px] flex-row items-center gap-4"
+                      >
+                        <img
+                          src={b.coverImage || "/images/book-placeholder.png"}
+                          alt={b.title}
+                          className="h-[138px] w-[92px] rounded-lg object-cover shadow-sm"
+                        />
+                        <div className="flex flex-col gap-1">
+                          <span className="w-fit rounded-[6px] border border-[#D5D7DA] bg-white px-2 text-[14px] font-bold text-[#0A0D12]">
+                            {b.category?.name || "Category"}
+                          </span>
+                          <h3 className="max-w-[280px] truncate text-[20px] font-bold text-[#0A0D12]">
+                            {b.title}
+                          </h3>
+                          <p className="text-[16px] font-medium text-[#414651]">
+                            {b.author?.name || "Unknown Author"}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })
+                ) : (
+                  <div className="rounded-xl border border-dashed p-2 text-center text-[16px] font-medium text-gray-500 italic">
+                    Selected items loaded successfully ({itemIds.length} items)
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -275,14 +230,62 @@ export default function CheckoutPage() {
               </label>
             </div>
 
+            {/* CONFIRM & BORROW BUTTON - ASYNC/AWAIT SUKSES TEPAT WAKTU */}
             <button
-              onClick={() => borrowMutation.mutate()}
-              disabled={
-                !agreeReturn || !agreePolicy || borrowMutation.isPending
-              }
-              className="h-[48px] w-full rounded-full bg-[#1C65DA] text-[16px] font-bold text-white transition-colors hover:bg-[#154eb3] disabled:cursor-not-allowed disabled:opacity-50"
+              type="button"
+              disabled={!agreeReturn || !agreePolicy}
+              onClick={async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (itemIds.length === 0) {
+                  alert(
+                    "No items selected for checkout. Please go back to your cart",
+                  );
+                  return;
+                }
+
+                try {
+                  console.log("Express checkout, send itemIds:", itemIds);
+
+                  // FIX SINKRONISASI TANGGAL SWAGGER: Wajib ISO YYYY-MM-DD
+                  const today = new Date();
+                  const yyyy = today.getFullYear();
+                  const mm = String(today.getMonth() + 1).padStart(2, "0");
+                  const dd = String(today.getDate()).padStart(2, "0");
+                  const formattedDate = `${yyyy}-${mm}-${dd}`;
+
+                  // Tembak langsung memakai Axios murni
+                  const res = await api.post("/api/loans/from-cart", {
+                    itemIds: itemIds,
+                    days: borrowDuration,
+                    borrowDate: formattedDate,
+                  });
+
+                  if (
+                    res.data?.success ||
+                    res.status === 200 ||
+                    res.status === 201
+                  ) {
+                    alert("Books borrowed successfully!");
+                    // Refresh data keranjang di memori agar item yang terpinjam hilang
+                    queryClient.invalidateQueries({
+                      queryKey: ["userCartItems"],
+                    });
+                    // Navigasi langsung menuju rute list pinjaman utama
+                    navigate("/loans");
+                  }
+                } catch (error: any) {
+                  console.error("Checkout error backend detail:", error);
+                  const serverMessage = error.response?.data?.message;
+                  alert(
+                    serverMessage || "Confirmed failed, stock empty on server",
+                  );
+                }
+              }}
+              className="h-[48px] w-full cursor-pointer rounded-full bg-[#1C65DA] text-[16px] font-bold text-white transition-colors hover:bg-[#154eb3] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {borrowMutation.isPending ? "Processing..." : "Confirm & Borrow"}
+              confirm and Borrow
             </button>
           </div>
         </div>
