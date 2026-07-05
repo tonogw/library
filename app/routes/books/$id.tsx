@@ -299,10 +299,34 @@ export default function BookDetailPage() {
                 <Button
                   variant="default"
                   type="button"
-                  onClick={() => {
-                    console.log("Navigasi ke halaman keranjang...");
-                    navigate("/user/cart");
+                  onClick={async () => {
+                    try {
+                      console.log("add book to cart, ID:", id);
+                      const res = await api.post("api/cart/items", {
+                        bookId: Number(id),
+                      });
+
+                      if (
+                        res.data?.success ||
+                        res.status === 200 ||
+                        res.status === 201
+                      ) {
+                        console.log("Book successful added to cart backend");
+                        navigate("/user/cart");
+                      }
+                    } catch (error: any) {
+                      console.error("Failed add to cart", error);
+                      alert(
+                        error.response?.data?.message ||
+                          "Failed add to cart, check your login status",
+                      );
+                    }
                   }}
+
+                  // onClick={() => {
+                  //   console.log("Navigasi ke halaman keranjang...");
+                  //   navigate("/user/cart");
+                  // }}
                   // onClick={(e) => {
                   //   e.preventDefault();
                   //   e.stopPropagation();
@@ -315,7 +339,8 @@ export default function BookDetailPage() {
                   // }
                   className="h-[48px] w-[200px] cursor-pointer rounded-full border border-[#D5D7DA] text-[16px] font-bold tracking-tight text-[#0A0D12] transition-colors hover:bg-gray-50"
                 >
-                  {addToCartMutation.isPending ? "Adding..." : "Add to Cart"}
+                  {/* {addToCartMutation.isPending ? "Adding..." : "Add to Cart"} */}
+                  Add to Cart
                 </Button>
                 {/* BORROW BOOK */}
                 <button
@@ -323,7 +348,7 @@ export default function BookDetailPage() {
                   type="button"
                   onClick={() => {
                     console.log("Navigasi ke halaman daftar pinjaman ...");
-                    navigate("/loans/${}");
+                    navigate("/loans");
                   }}
                   // onClick={(e) => {
                   //   e.preventDefault();
@@ -337,9 +362,10 @@ export default function BookDetailPage() {
                   // }
                   className="h-[48px] w-[200px] rounded-full bg-[#1C65DA] text-[16px] font-bold tracking-tight text-white transition-colors hover:bg-[#154eb3]"
                 >
-                  {borrowInstantMutation.isPending
+                  {/* {borrowInstantMutation.isPending
                     ? "Borrowing ... "
-                    : "Borrow Book"}
+                    : "Borrow Book"} */}
+                  Borrow Book
                 </button>
               </div>
             </div>
