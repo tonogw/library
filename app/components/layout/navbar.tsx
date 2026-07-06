@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { useSelector } from "react-redux";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { selectIsAuthenticated } from "~/store/authSlice";
 import { queryKeys } from "~/lib/query/keys";
 import api from "~/lib/api/axios";
@@ -22,6 +22,7 @@ import { Search } from "lucide-react";
 import SearchBook from "../shared/searchBook-form";
 
 export default function Navbar() {
+  const queryClient = useQueryClient();
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [mounted, setMounted] = useState(false);
@@ -30,6 +31,9 @@ export default function Navbar() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const meResponse = queryClient.getQueryData<any>(["currentUserRoleCheck"]);
+  const userRole = meResponse?.data?.profile?.role;
 
   const { data: cartData } = useQuery({
     queryKey: queryKeys.cart(),
@@ -56,6 +60,11 @@ export default function Navbar() {
             Booky
           </span>
         </Link>
+        {userRole === "ADMIN" && (
+          <Link to="/admin/books" hidden>
+            Admin Dashboard
+          </Link>
+        )}
 
         {/* SEARCH BAR */}
         <div className="hidden w-full max-w-360 lg:block">
