@@ -48,7 +48,7 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 h-20 border-b border-gray-100 bg-white shadow-sm shadow-gray-100">
-      <div className="mx-auto flex h-20 max-w-360 items-center justify-between bg-white px-6 lg:px-30">
+      <div className="mx-auto flex h-20 max-w-300 items-center justify-between bg-white px-4! lg:px-0">
         {/* LOGO */}
         <Link to="/" className="flex items-center gap-[11.79px]">
           <img
@@ -81,7 +81,7 @@ export default function Navbar() {
                 <img
                   src="/icons/Search.svg"
                   alt="search"
-                  className="items-left justrify-left"
+                  className="items-right lg:items-left justrify-left"
                 />
               </Button>
             </SheetTrigger>

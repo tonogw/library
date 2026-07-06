@@ -75,7 +75,7 @@ export default function BorrowedListPage() {
   return (
     <>
       <Navbar />
-      <div className="mx-auto flex w-screen flex-col gap-6 bg-white px-4 pt-8 pb-16 font-quicksand sm:max-w-90.25 lg:max-w-300 lg:px-0">
+      <div className="mx-auto flex w-full flex-col gap-6 bg-white px-4! pt-8 pb-16 font-quicksand md:px-15 lg:max-w-300 lg:px-0">
         {/* 1. TOP TABS CONTROL */}
         <div className="flex h-14 w-90.25 items-center gap-2 rounded-2xl bg-[#F5F5F5] p-2 lg:w-139.25">
           <Link
@@ -197,7 +197,7 @@ export default function BorrowedListPage() {
                   <hr className="w-full border-[#D5D7DA]" />
 
                   {/* Bawah: Detail Buku & Tombol Review */}
-                  <div className="flex w-full flex-col items-start justify-between gap-4 md:flex-row md:items-center md:gap-0">
+                  <div className="flex w-full flex-col items-start justify-between gap-4 bg-[#FDFDFD] md:flex-row md:items-center md:gap-0">
                     <div className="flex items-center gap-4">
                       <img
                         src={bookCover}

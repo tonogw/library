@@ -12,6 +12,12 @@ import { selectIsAuthenticated } from "~/store";
 
 export default function Profile() {
   const [mounted, setMounted] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  // State form to transit edited data
+  const [formDataState, setFormDataState] = useState({
+    phone: "",
+  });
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
   const isAuthenticated = useSelector(selectIsAuthenticated);
@@ -37,6 +43,27 @@ export default function Profile() {
   });
 
   const user: UserProfileData = userResponse?.data?.profile;
+
+  // Sync api data
+  useEffect(() => {
+    if (user) {
+      setFormDataState({
+        phone: user.phone,
+      });
+    }
+  }, [user]);
+
+  const saveProfileData = async (payloadPhone: string, file?: File) => {
+    if (!payloadPhone.trim()) {
+      alert("Phone cannot be empty");
+      return;
+    }
+    if (payloadPhone && (payloadPhone.length < 8 || payloadPhone.length > 20)) {
+      alert("Phone number be empty");
+      return;
+    }
+  };
+
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
@@ -72,6 +99,15 @@ export default function Profile() {
       const serverMessage =
         error?.response?.data?.message || "Failed to upload photo.";
       alert(`Upload failed: ${serverMessage}`);
+    }
+    await saveProfileData(formDataState.phone, file);
+  };
+
+  const handleUpdateProfileSubmit = async () => {
+    if (!isEditing) {
+      setIsEditing(true);
+    } else {
+      await saveProfileData(formDataState.phone);
     }
   };
 
@@ -171,26 +207,55 @@ export default function Profile() {
                   <span className="text-[16px] leading-7.5 font-medium tracking-[-0.03em] text-[#0A0D12]">
                     Nomor Handphone
                   </span>
-                  <span className="max-w-62.5 truncate py-4 text-right text-[16px] leading-7.5 font-bold tracking-[-0.02em] text-[#0A0D12]">
-                    {user.phone || ""}
-                  </span>
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      placeholder="0812345678"
+                      value={formDataState.phone}
+                      onChange={(e) =>
+                        setFormDataState({
+                          ...formDataState,
+                          phone: e.target.value,
+                        })
+                      }
+                      className="w-2/3 rounded-lg border border-gray-300 px-3 py-1 text-right text-[16px] font-bold text-[#0A0D12] focus:border-[#1C65DA] focus:outline-none"
+                    />
+                  ) : (
+                    <span className="max-w-62.5 truncate py-4 text-right text-[16px] leading-7.5 font-bold tracking-[-0.02em] text-[#0A0D12]">
+                      {user.phone || ""}
+                    </span>
+                  )}
                 </div>
               </div>
 
-              {/* Action Button: Log Out */}
+              {/* Action Button: Update Profile */}
               <button
                 type="button"
-                onClick={() => {
-                  localStorage.removeItem("token");
-                  window.location.href = "/login";
-                }}
+                onClick={handleUpdateProfileSubmit}
+                // onClick={() => {
+                //   localStorage.removeItem("token");
+                //   window.location.href = "/login";
+                // }}
                 className="align-self-stretch order-1 flex w-full flex-none grow-0 cursor-pointer flex-row items-center justify-center gap-2 bg-[#1C65DA] p-2 shadow-sm transition-colors hover:bg-[#154eb3]"
                 style={{ height: "44px", borderRadius: "100px" }}
               >
                 <span className="text-[16px] leading-7.5 font-bold tracking-[-0.02em] text-[#FDFDFD]">
-                  Log Out
+                  {/* Update Profile */}
+                  {isEditing ? "Save Changes" : "Update Profile"}
                 </span>
               </button>
+              {isEditing && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsEditing(false);
+                    setFormDataState({ phone: user?.phone || "" });
+                  }}
+                  className="w-full py-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-700"
+                >
+                  Cancel
+                </button>
+              )}
             </div>
           </div>
         </div>
