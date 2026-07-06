@@ -1,17 +1,34 @@
-import { Navigate, Outlet } from "react-router";
+import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import api from "~/lib/api/axios";
 
 export default function AdminProtectedLayout() {
-  // Ambil data user login secara realtime dari middleware server backend
-  const { data: meResponse, isLoading } = useQuery({
+  const navigate = useNavigate();
+
+  const {
+    data: meResponse,
+    isLoading,
+    isFetched,
+  } = useQuery({
     queryKey: ["currentUserRoleCheck"],
     queryFn: async () => {
       const res = await api.get("/api/me");
       return res.data;
     },
-    retry: false, // Jika token invalid/expired, langsung hentikan percobaan
+    retry: false,
   });
+
+  // 🎯 PERBAIKAN: Arahkan ke .data.profile.role sesuai log API Anda
+  const userRole = meResponse?.data?.profile?.role;
+
+  useEffect(() => {
+    // Jalankan redirect HANYA jika loading selesai, data sudah sukses diambil, dan terbukti bukan ADMIN
+    if (!isLoading && isFetched && userRole !== "ADMIN") {
+      console.warn(`⛔ Akses ditolak! Role Anda adalah: ${userRole}`);
+      navigate("/", { replace: true });
+    }
+  }, [userRole, isLoading, isFetched, navigate]);
 
   if (isLoading) {
     return (
@@ -19,14 +36,10 @@ export default function AdminProtectedLayout() {
     );
   }
 
-  const userRole = meResponse?.data?.role; // Menangkap string "ADMIN" atau "USER"
-
-  // 💥 KUNCI RESTRIKSI: Jika bukan ADMIN, tendang paksa balik ke halaman utama secara otomatis!
-  if (userRole !== "ADMIN") {
-    console.warn("⛔ Akses ditolak! Anda bukan admin.");
-    return <Navigate to="/" replace />;
+  // Jika data belum siap atau role bukan ADMIN, jangan render komponen di dalamnya dulu
+  if (!isFetched || userRole !== "ADMIN") {
+    return null;
   }
 
-  // Jika terbukti ADMIN, persilahkan masuk ke halaman dashboard admin figma
   return <Outlet />;
 }
