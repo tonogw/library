@@ -127,14 +127,14 @@ export default function Profile() {
               {/* Info Rows Area */}
               <div className="align-self-stretch order-0 flex h-47.5 w-full flex-none grow-0 flex-col items-start gap-3">
                 {/* Avatar Image */}
-                <div
+                {/* <div
                   className="order-0 flex-none grow-0 rounded-full border border-gray-200 bg-gray-100 bg-cover bg-center"
                   style={{
                     width: "64px",
                     height: "64px",
                     backgroundImage: `url(${user.profilePhoto || "/images/author1.png"})`,
                   }}
-                />
+                /> */}
                 <div
                   className="group relative cursor-pointer"
                   onClick={() => fileInputRef.current?.click()}
@@ -186,7 +186,7 @@ export default function Profile() {
                   <span className="text-[16px] leading-7.5 font-medium tracking-[-0.03em] text-[#0A0D12]">
                     Nomor Handphone
                   </span>
-                  <span className="max-w-62.5 truncate text-right text-[16px] leading-7.5 font-bold tracking-[-0.02em] text-[#0A0D12]">
+                  <span className="max-w-62.5 truncate py-4 text-right text-[16px] leading-7.5 font-bold tracking-[-0.02em] text-[#0A0D12]">
                     {user.phone || ""}
                   </span>
                 </div>
