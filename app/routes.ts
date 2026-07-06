@@ -21,7 +21,7 @@ export default [
 
   // Fitur User (Profile, Cart, Loans)
   layout("components/layout/user-protected.tsx", [
-    route("profile", "routes/user/profile.tsx"),
+    route("user/profile", "routes/user/profile.tsx"),
     route("user/cart", "routes/user/cart.tsx"),
     route("user/checkout", "routes/user/checkout.tsx"),
     route("loans", "routes/borrow/index.tsx"),

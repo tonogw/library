@@ -13,6 +13,8 @@ import { selectIsAuthenticated } from "~/store";
 
 export default function Profile() {
   const [mounted, setMounted] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const queryClient = useQueryClient();
   const isAuthenticated = useSelector(selectIsAuthenticated);
 
   useEffect(() => {
@@ -35,11 +37,50 @@ export default function Profile() {
       return res.data;
     },
     enabled: mounted,
+    staleTime: 10000,
   });
 
   const user: UserProfileData = userResponse?.data?.profile;
-  console.log("Data response me dari swagger:", userResponse);
-  console.log("Data object extracted successfully:", user);
+  // console.log("Data response me dari swagger:", userResponse);
+  // console.log("Data object extracted successfully:", user);
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast("File size too large. maximum size is 5MB.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", user.name);
+    formData.append("phone", user.phone);
+    formData.append("profilePhoto", file);
+
+    try {
+      toast.loading("Uploading profile photo ...");
+      const token =
+        typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+      const res = await api.patch("/api/me/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: token ? `Bearer ${token}` : undefined,
+        },
+      });
+      if (res.data?.success || res.status === 200) {
+        toast.dismiss();
+        alert("Profile photo updated successfully!");
+        queryClient.invalidateQueries({ queryKey: ["currentUserProfileData"] });
+      }
+    } catch (error: any) {
+      toast.dismiss();
+      const serverMessage =
+        error?.response?.data?.message || "Failed to upload photo.";
+      alert(`Upload failed: ${serverMessage}`);
+    }
+  };
 
   if (!mounted || isLoading) {
     // return toast("Loading profile data...");
@@ -93,6 +134,31 @@ export default function Profile() {
                     height: "64px",
                     backgroundImage: `url(${user.profilePhoto || "/images/author1.png"})`,
                   }}
+                />
+                <div
+                  className="group relative cursor-pointer"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <div
+                    className="order-0 flex-none grow-0 rounded-full border border-gray-200 bg-gray-100 bg-cover bg-center transition-opacity group-hover:opacity-80"
+                    style={{
+                      width: "64px",
+                      height: "64px",
+                      backgroundImage: `url(${user?.profilePhoto || "/images/book-placeholder.png"})`,
+                    }}
+                  />
+
+                  <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/20 text-[12px] font-bold text-white opacity-0 transition-opacity group-hover:opacity-100">
+                    Edit
+                  </div>
+                </div>
+
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleAvatarChange}
+                  accept="image/jpeg,image/png,image/gif,image/webp"
+                  className="hidden"
                 />
 
                 {/* Row 1: Name  */}
