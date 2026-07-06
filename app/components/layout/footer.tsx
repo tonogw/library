@@ -20,16 +20,18 @@ export default function Footer() {
           <div className="mb-8 h-px w-full" />
 
           <div className="custom-container relative z-20 flex h-50.5 flex-col items-center justify-center text-center">
-            <div className="itemr pointer-events-auto mt-80 mb-4 flex">
+            <div className="mt-80 mb-4 flex items-center gap-2">
               <img
                 src="/icons/Logo.svg"
                 alt="Your Logo"
-                width={206}
+                width={54}
                 height={54}
-                style={{ width: "206px", height: "48px" }}
-                className="object-contain"
+                style={{ width: "48px", height: "48px" }}
+                className="items object-contain"
               />
-              <h2 className="text-left text-display-2xl font-bold">Booky</h2>
+              <h2 className="flex text-left text-display-2xl font-bold">
+                Booky
+              </h2>
             </div>
 
             <p className="mb-5 max-w-155 px-4 text-xs leading-relaxed font-medium text-neutral-500 md:text-sm dark:text-neutral-400">

@@ -85,7 +85,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
   return (
     <div className="min-h-screen bg-gray-200 font-quicksand">
-      <main className="mx-auto max-w-[1440px] px-6 py-20 lg:px-[120px]">
+      <main className="mx-auto max-w-360 px-6 py-20 lg:px-30">
         <div className="rounded-2xl p-8 text-center shadow-xs">
           <h1 className="text-48 m-0 mb-2 font-extrabold text-[#EE1D52]">
             {message}
@@ -93,7 +93,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
           <h2 className="text-18 mb-4 font-bold text-[#0A0D12]">
             Aplikasi Mengalami Kendala
           </h2>
-          <p className="text-14 mb-6 leading-relaxed font-medium text-[#414651]">
+          <p className="text-14 mb-6 leading-relaxed font-medium text-neutral-700">
             {details}
           </p>
 

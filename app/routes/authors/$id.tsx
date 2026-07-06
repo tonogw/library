@@ -67,10 +67,10 @@ export default function AuthorBookListPage() {
         <Navbar />
 
         {/* Outer Container Utama untuk Konten Halaman (Footer dikeluarkan dari sini) */}
-        <div className="mx-auto mt-[56px] mb-20 flex max-w-[1200px] flex-col items-start gap-[40px] px-4 lg:px-0">
+        <div className="mx-auto mt-14 mb-20 flex max-w-300 flex-col items-start gap-10 px-4 lg:px-0">
           {/* CARD AUTHORS - TOP PANEL */}
           <div
-            className="flex w-full flex-row items-center gap-[16px] border border-gray-50 bg-[#FFFFFF] p-[16px]"
+            className="flex w-full flex-row items-center gap-4 border border-gray-50 bg-[#FFFFFF] p-4"
             style={{
               height: "113px",
               boxShadow: "0px 0px 20px rgba(203, 202, 202, 0.25)",
@@ -86,16 +86,16 @@ export default function AuthorBookListPage() {
               }}
             />
 
-            <div className="flex h-[64px] flex-none flex-col items-start gap-[2px]">
-              <h2 className="truncate text-[18px] leading-[32px] font-bold tracking-[-0.03em] text-[#181D27]">
+            <div className="flex h-16 flex-none flex-col items-start gap-0.5">
+              <h2 className="truncate text-[18px] leading-8 font-bold tracking-[-0.03em] text-[#181D27]">
                 {currentAuthor?.name || "Unknown Author"}
               </h2>
 
-              <div className="flex h-[30px] flex-none flex-row items-center gap-[6px]">
-                <span className="flex h-[24px] w-[24px] items-center justify-center text-[18px] text-[#1C65DA]">
+              <div className="flex h-7.5 flex-none flex-row items-center gap-1.5">
+                <span className="flex h-6 w-6 items-center justify-center text-[18px] text-[#1C65DA]">
                   📘
                 </span>
-                <span className="text-[16px] leading-[30px] font-medium tracking-[-0.03em] text-[#0A0D12]">
+                <span className="text-[16px] leading-7.5 font-medium tracking-[-0.03em] text-[#0A0D12]">
                   {currentAuthor?.bookCount || books.length} books
                 </span>
               </div>
@@ -103,8 +103,8 @@ export default function AuthorBookListPage() {
           </div>
 
           {/* BOOK LIST SECTION - GRID WRAPPER */}
-          <div className="flex w-full flex-col items-start gap-[32px]">
-            <h2 className="text-[36px] leading-[44px] font-bold tracking-[-0.02em] text-[#0A0D12]">
+          <div className="flex w-full flex-col items-start gap-8">
+            <h2 className="text-[36px] leading-11 font-bold tracking-[-0.02em] text-[#0A0D12]">
               Book List
             </h2>
 
@@ -113,7 +113,7 @@ export default function AuthorBookListPage() {
                 No books found published by this author in the library.
               </div>
             ) : (
-              <div className="flex w-full flex-row flex-wrap items-center justify-start gap-[20px]">
+              <div className="flex w-full flex-row flex-wrap items-center justify-start gap-5">
                 {books.map((book: BookType) => (
                   <div
                     key={book.id}
@@ -129,28 +129,28 @@ export default function AuthorBookListPage() {
                     <img
                       src={book.coverImage || "/images/book-placeholder.png"}
                       alt={book.title}
-                      className="h-[336px] w-[224px] object-cover"
+                      className="h-84 w-56 object-cover"
                       style={{
                         borderRadius: "12px 12px 0px 0px",
                       }}
                     />
 
-                    <div className="flex h-[132px] w-[224px] flex-col items-start gap-[4px] rounded-[0px_0px_12px_12px] p-[16px]">
-                      <h3 className="h-[32px] w-[192px] truncate text-[18px] leading-[32px] font-bold tracking-[-0.03em] text-[#181D27]">
+                    <div className="flex h-33 w-56 flex-col items-start gap-1 rounded-[0px_0px_12px_12px] p-4">
+                      <h3 className="h-8 w-48 truncate text-[18px] leading-8 font-bold tracking-[-0.03em] text-[#181D27]">
                         {book.title}
                       </h3>
 
-                      <p className="h-[30px] w-[192px] truncate text-[16px] leading-[30px] font-medium tracking-[-0.03em] text-[#414651]">
+                      <p className="h-7.5 w-48 truncate text-[16px] leading-7.5 font-medium tracking-[-0.03em] text-neutral-700">
                         {currentAuthor?.name ||
                           book.author?.name ||
                           "Unknown Author"}
                       </p>
 
-                      <div className="flex h-[30px] w-[192px] flex-row items-center gap-[4px]">
+                      <div className="flex h-7.5 w-48 flex-row items-center gap-1">
                         <span className="flex items-center text-[18px] text-[#FFAB0D]">
                           ★
                         </span>
-                        <span className="text-[16px] leading-[30px] font-semibold tracking-[-0.02em] text-[#181D27]">
+                        <span className="text-[16px] leading-7.5 font-semibold tracking-[-0.02em] text-[#181D27]">
                           {book.rating || "4.9"}
                         </span>
                       </div>

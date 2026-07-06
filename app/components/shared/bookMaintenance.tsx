@@ -239,6 +239,7 @@ export default function BookMaintenance() {
 
             <label className="box-sizing flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#D5D7DA] bg-white transition-colors hover:bg-gray-50/50">
               <input
+                id="file-image"
                 type="file"
                 accept="image/*"
                 className="hidden"

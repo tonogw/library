@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import UserProfileTab from "~/components/shared/userProfileTab";
 import { useSelector } from "react-redux";
 import { selectIsAuthenticated } from "~/store";
-// import { Link } from "react-router";
 
 export default function Profile() {
   const [mounted, setMounted] = useState(false);
@@ -20,9 +19,6 @@ export default function Profile() {
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  // const hasToken =
-  //   typeof window !== "undefined" && !!localStorage.getItem("token");
 
   const { data: userResponse, isLoading } = useQuery({
     queryKey: ["currentUserProfileData"],
@@ -41,9 +37,6 @@ export default function Profile() {
   });
 
   const user: UserProfileData = userResponse?.data?.profile;
-  // console.log("Data response me dari swagger:", userResponse);
-  // console.log("Data object extracted successfully:", user);
-
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
@@ -126,15 +119,6 @@ export default function Profile() {
             >
               {/* Info Rows Area */}
               <div className="align-self-stretch order-0 flex h-47.5 w-full flex-none grow-0 flex-col items-start gap-3">
-                {/* Avatar Image */}
-                {/* <div
-                  className="order-0 flex-none grow-0 rounded-full border border-gray-200 bg-gray-100 bg-cover bg-center"
-                  style={{
-                    width: "64px",
-                    height: "64px",
-                    backgroundImage: `url(${user.profilePhoto || "/images/author1.png"})`,
-                  }}
-                /> */}
                 <div
                   className="group relative cursor-pointer"
                   onClick={() => fileInputRef.current?.click()}
@@ -154,6 +138,7 @@ export default function Profile() {
                 </div>
 
                 <input
+                  id="profile-photo"
                   type="file"
                   ref={fileInputRef}
                   onChange={handleAvatarChange}

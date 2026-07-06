@@ -1,17 +1,19 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, useNavigate } from 'react-router';
-import { Button } from '~/components/ui/button';
-import { Input } from '~/components/ui/input';
-import { InputGroup, InputGroupAddon } from '~/components/ui/input-group';
-import { useMutation } from '@tanstack/react-query';
-import { useDispatch } from 'react-redux';
-import { setCredentials } from '~/store/authSlice';
-import api from '~/lib/api/axios';
-import { toast } from 'sonner';
-import { loginSchema } from '~/lib/validations';
-import type { LoginFormValues } from '~/lib/validations';
+"use client";
+
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Link, useNavigate } from "react-router";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { InputGroup, InputGroupAddon } from "~/components/ui/input-group";
+import { useMutation } from "@tanstack/react-query";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "~/store/authSlice";
+import api from "~/lib/api/axios";
+import { toast } from "sonner";
+import { loginSchema } from "~/lib/validations";
+import type { LoginFormValues } from "~/lib/validations";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,13 +26,13 @@ export default function Login() {
     formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
-    mode: 'onChange',
+    mode: "onChange",
   });
 
   // Mutasi TanStack Query untuk Hit Login API
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: LoginFormValues) => {
-      const response = await api.post('/api/auth/login', data);
+      const response = await api.post("/api/auth/login", data);
       return response.data;
     },
     onSuccess: (resData) => {
@@ -42,18 +44,18 @@ export default function Login() {
         }),
       );
 
-      toast.success('Login berhasil! Selamat datang kembali.');
+      toast.success("Login successful! Welcome back.");
 
-      // 2. SOPHISTICATED REDIRECT: Cek role user hasil login
-      if (resData.data.user?.role === 'ADMIN') {
-        navigate('/admin/users'); // Arahkan ke dashboard list admin
+      // 2. SOPHISTICATED REDIRECT: get user role upon login
+      if (resData.data.user?.role === "ADMIN") {
+        navigate("/admin/users"); // send to admin dashboard
       } else {
-        navigate('/'); // User biasa arahkan ke home
+        navigate("/"); // guest send to home
       }
     },
     onError: (error: any) => {
       const errorMessage =
-        error.response?.data?.message || 'Email atau password salah';
+        error.response?.data?.message || "Email or password invalid";
       toast.error(errorMessage);
     },
   });
@@ -64,7 +66,7 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-white font-['Quicksand']">
-      <div className="flex w-[400px] flex-col gap-5 py-[94px]">
+      <div className="flex w-100 flex-col gap-5 py-23.5">
         {/* Logo & Brand */}
         <div className="flex flex-row items-center gap-[11.79px]">
           <img
@@ -82,7 +84,7 @@ export default function Login() {
           <h1 className="text-28 font-bold tracking-tight text-[#0A0D12]">
             Login
           </h1>
-          <p className="text-16 font-semibold tracking-tight text-[#414651]">
+          <p className="text-16 font-semibold tracking-tight text-neutral-700">
             Welcome back! Please enter your details.
           </p>
         </div>
@@ -93,14 +95,15 @@ export default function Login() {
           <div className="flex flex-col gap-0.5">
             <label className="text-14 font-bold text-[#0A0D12]">Email</label>
             <Input
-              {...register('email')}
+              id="current-email"
+              {...register("email")}
               type="email"
               autoComplete="email"
               placeholder="Masukkan email Anda"
               className={`rounded-12 h-12 border px-4 ${
                 errors.email
-                  ? 'border-[#EE1D52] focus-visible:ring-[#EE1D52]'
-                  : 'border-gray-200'
+                  ? "border-[#EE1D52] focus-visible:ring-[#EE1D52]"
+                  : "border-gray-200"
               }`}
             />
             {errors.email && (
@@ -117,15 +120,15 @@ export default function Login() {
             {/* INTEGRASI INPUT GROUP BERSAMA REGISTER */}
             <InputGroup className="relative">
               <Input
-                {...register('password')}
+                {...register("password")}
                 id="current-password"
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
-                placeholder="Masukkan password Anda"
+                placeholder="Enter your password"
                 className={`rounded-12 h-12 w-full border pr-12 pl-4 ${
                   errors.password
-                    ? 'border-[#EE1D52] focus-visible:ring-[#EE1D52]'
-                    : 'border-gray-200'
+                    ? "border-[#EE1D52] focus-visible:ring-[#EE1D52]"
+                    : "border-gray-200"
                 }`}
               />
               <InputGroupAddon
@@ -138,7 +141,7 @@ export default function Login() {
                   className="flex cursor-pointer items-center justify-center text-gray-400 hover:text-gray-600"
                 >
                   <img
-                    src={showPassword ? '/icons/eye.svg' : '/icons/eye-off.svg'}
+                    src={showPassword ? "/icons/eye.svg" : "/icons/eye-off.svg"}
                     alt="toggle visibility"
                     className="h-5 w-5 object-contain"
                   />
@@ -159,7 +162,7 @@ export default function Login() {
             disabled={isPending}
             className="text-16 mt-2 h-12 w-full cursor-pointer rounded-full bg-[#1C65DA] font-bold text-[#FDFDFD] hover:bg-[#154eb3]"
           >
-            {isPending ? 'Logging in...' : 'Log In'}
+            {isPending ? "Logging in..." : "Log In"}
           </Button>
         </form>
 

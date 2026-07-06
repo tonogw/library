@@ -16,45 +16,6 @@ import { useInstantBorrow } from "~/lib/query/useBorrow";
 import type { BookDetailData } from "~/types";
 import type { ReviewItem } from "~/types";
 
-// interface ReviewItem {
-//   id: number;
-//   star: number;
-//   comment: string;
-//   userId: number;
-//   bookId: number;
-//   createdAt: string;
-//   user: {
-//     id: number;
-//     name: string;
-//   };
-// }
-
-// interface BookDetailData {
-//   id: number;
-//   title: string;
-//   description: string;
-//   isbn: string;
-//   publishedYear: number;
-//   coverImage?: string;
-//   rating: number;
-//   reviewCount: number;
-//   totalCopies: number;
-//   availableCopies: number;
-//   borrowCount: number;
-//   createdAt: string;
-//   updatedAt: string;
-//   author?: {
-//     id: number;
-//     name: string;
-//     bio: string;
-//   };
-//   category?: {
-//     id: number;
-//     name: string;
-//   };
-//   reviews?: ReviewItem[];
-// }
-
 export default function BookDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -62,12 +23,12 @@ export default function BookDetailPage() {
   const [visibleCount, setVisibleCount] = useState(6);
   const borrowInstantMutation = useInstantBorrow(id);
 
-  // Jika ID buku berubah dari rekomendasi bawah, kembalikan batas pagination awal ke 6 review
+  // Visible count per fetch
   useEffect(() => {
     setVisibleCount(6);
   }, [id]);
 
-  // Fetch data detail buku utama
+  // Fetch book detail
   const { data: bookResponse, isLoading: isBookLoading } = useQuery({
     queryKey: ["bookDetail", id],
     queryFn: async () => {
@@ -80,7 +41,7 @@ export default function BookDetailPage() {
     enabled: !!id,
   });
 
-  // Ambil data profile pribadi yang sedang login
+  // Fetch user progfile data
   console.log("id =", id);
   const { data: meResponse } = useQuery({
     queryKey: ["currentUserProfile"],
@@ -120,7 +81,7 @@ export default function BookDetailPage() {
     },
   });
 
-  // Fetch rekomendasi buku terkait
+  // Fetch related books
   const { data: relatedResponse } = useQuery({
     queryKey: ["relatedBooks", id],
     queryFn: async () => {
@@ -134,20 +95,12 @@ export default function BookDetailPage() {
 
   const addToCartMutation = useMutation({
     mutationFn: async () => {
-      //   console.log("mutation start")
-      //   // return await api.post("/api/cart/items", {
-
       const res = await api.post("/api/cart/items", {
         bookId: Number(id),
       });
-      //   console.log(res)
+
       return res.data;
     },
-    // mutationFn:async ()=> {
-    //   return await api.post("/api/cart/items", {
-    //     bookId: Number(id),
-    //   });
-    // },
 
     onSuccess: (resData) => {
       toast.success(resData?.message || "Successfully added to cart!");

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"; // 1. Tambahkan useEffect
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
@@ -24,10 +24,9 @@ import SearchBook from "../shared/searchBook-form";
 export default function Navbar() {
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [mounted, setMounted] = useState(false); // 2. State untuk melacak mounting browser
+  const [mounted, setMounted] = useState(false);
   const isAuthenticated = useSelector(selectIsAuthenticated);
 
-  // 3. Set mounted menjadi true setelah masuk ke browser client
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -38,20 +37,10 @@ export default function Navbar() {
       const response = await api.get("/api/cart");
       return response.data;
     },
-    enabled: isAuthenticated && mounted, // Hanya ambil data jika sudah mounted
+    enabled: isAuthenticated && mounted,
   });
 
-  // const totalItems = cartData?.summary?.totalItems ?? 0;
   const totalItems = cartData?.data?.itemCount ?? 0;
-  // const handleSearchTrigger = (value: string) => {
-  //   const params = new URLSearchParams();
-
-  //   if (value.trim()) {
-  //     params.set("search", value);
-  //     params.set("page", "1");
-  //   }
-  //   navigate(`/search-book?${params.toString()}`);
-  // };
 
   return (
     <nav className="sticky top-0 z-50 h-20 border-b border-gray-100 bg-white shadow-sm shadow-gray-100">
@@ -71,15 +60,6 @@ export default function Navbar() {
         {/* SEARCH BAR */}
         <div className="hidden w-full max-w-360 lg:block">
           <SearchBook />
-          {/* <Search className="absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-gray-400" />
-          <Input
-            id="search-bar"
-            type="text"
-            placeholder="Search book"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="text-14 h-10 rounded-full border border-gray-200 bg-white pr-4 pl-11 font-['Quicksand'] focus-visible:ring-gray-300"
-          /> */}
         </div>
         <div className="block lg:hidden">
           <Sheet open={isMobileSearchOpen} onOpenChange={setIsMobileSearchOpen}>
@@ -107,9 +87,9 @@ export default function Navbar() {
           </Sheet>
         </div>
 
-        {/* CONTROLS (KANAN) */}
+        {/* RIGHT BLOK */}
         <div className="flex items-center gap-4">
-          {/* 4. Bungkus pengecekan auth dengan kondisi mounted */}
+          {/* User verification */}
           {mounted && isAuthenticated ? (
             <div className="flex items-center gap-4">
               <Link
@@ -131,7 +111,7 @@ export default function Navbar() {
               <UserProfileSheet />
             </div>
           ) : (
-            // Jika belum selesai loading mounted di client, tampilkan tombol sign in default agar server & client sinkron
+            // must logged in
             <Link
               to="/login"
               className="rounded-full border border-[#0A0D12] px-5 py-2 font-['Quicksand'] text-sm font-bold text-[#0A0D12] hover:bg-gray-50"

@@ -104,23 +104,6 @@ export default function AdminBookList() {
         {/* CONTROLS SEARCH & FILTER */}
         <div className="mb-6 flex w-full flex-col items-start justify-between gap-4 md:flex-row md:items-center">
           <div className="relative w-full max-w-md">
-            {/* <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4"> */}
-            {/* <InputGroup */}
-
-            {/* <Search
-                className={`h-5 w-5 ${isFetching ? "animate-pulse text-[#1C65DA]" : "text-gray-400"}`}
-              /> */}
-            {/* </div> */}
-            {/* <Input
-              id="book-search"
-              name="q"
-              type="text"
-              placeholder="Search judul buku / author lalu Enter..."
-              value={keyword}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
-              className="text-14 h-12 w-full rounded-full border border-gray-200 bg-white pr-4 pl-12 text-[#0A0D12] placeholder-gray-400 focus-visible:ring-gray-300"
-            /> */}
             <InputGroup className="relative w-full">
               {/* Container Ikon Gambar Sendiri */}
               <div className="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-4">
