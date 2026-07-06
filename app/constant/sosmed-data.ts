@@ -22,7 +22,7 @@ export const sosmedIcon: SosmedIconProps[] = [
     src: "/icons/fb.png",
     motion: {
       animate: {
-        y: [0, -8, 0],
+        y: [0, -6, 0],
       },
       transition: {
         duration: 1.5,
@@ -92,6 +92,6 @@ export const sosmedIcon: SosmedIconProps[] = [
     alt: "Tiktok",
     width: 48,
     height: 48,
-    hoverBg: "hover:bg-[#0a66c2] hover:text-white",
+    hoverBg: "hover:bg-gray-900 hover:text-white",
   },
 ];

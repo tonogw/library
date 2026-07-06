@@ -40,7 +40,7 @@ export default function AuthorSection() {
 
       {/* 2. GRID/FLEX ROW CONTAINER (Frame 1618874003) */}
       <div className="grid min-h-28.25 w-full grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {/* 💥 DI-LIMIT 5 AUTHOR SAJA DENGAN SLICE */}
+        {/* 💥 DI-LIMIT 4 AUTHOR SAJA DENGAN SLICE */}
         {popularAuthors.slice(0, 4).map((author) => (
           <Link
             key={author.id}

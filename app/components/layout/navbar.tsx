@@ -113,7 +113,7 @@ export default function Navbar() {
           {mounted && isAuthenticated ? (
             <div className="flex items-center gap-4">
               <Link
-                to="/cart"
+                to="/user/cart"
                 className="relative flex h-10 w-10 items-center justify-center rounded-full border border-gray-100 p-2 transition-transform hover:scale-105"
               >
                 <img

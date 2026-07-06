@@ -44,7 +44,7 @@ export default function Footer() {
                   key={icon.alt}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`${icon.hoverBg} group relative flex h-14 w-14 items-center justify-center rounded-full border bg-[#FDFDFD] shadow-xl backdrop-blur-2xl transition-all duration-500`}
+                  className={`${icon.hoverBg} group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#FDFDFD] shadow-xl backdrop-blur-2xl transition-all duration-500`}
                 >
                   <m.div
                     animate={icon.motion.animate}

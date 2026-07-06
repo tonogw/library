@@ -1,58 +1,28 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link, useSearchParams } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+import { Link, useSearchParams } from "react-router"; // Menggunakan React Router v7
 import api from "~/lib/api/axios";
 import { Input } from "~/components/ui/input";
 import { InputGroup } from "~/components/ui/input-group";
-import { toast } from "sonner"; // Asumsi sonner active di ui/sonner Bapak
+import type { BorrowedItem } from "~/types";
 import Navbar from "~/components/layout/navbar";
-
-interface BorrowedItem {
-  id: number;
-  status: string;
-  displayStatus: "Active" | "Returned" | "Overdue" | string;
-  borrowedAt: string;
-  dueAt: string;
-  returnedAt: string | null;
-  durationDays: number;
-  book: {
-    id: number;
-    title: string;
-    description: string;
-    coverImage: string;
-    author: {
-      name: string;
-    };
-    category: {
-      name: string;
-    };
-  };
-}
+import Footer from "~/components/layout/footer";
 
 export default function BorrowedListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const queryClient = useQueryClient();
 
-  // State Manajemen Modal Review
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedBook, setSelectedBook] = useState<{
-    id: number;
-    title: string;
-  } | null>(null);
-  const [rating, setRating] = useState<number>(4); // Default 4 bintang sesuai Figma Vector
-  const [comment, setComment] = useState<string>("");
-
+  // Ambil state filter aktif dari URL (Default: All)
   const currentStatus = searchParams.get("status") || "All";
   const searchQuery = searchParams.get("q") || "";
   const [keyword, setKeyword] = useState(searchQuery);
 
-  // Fetch data daftar peminjaman
+  // Fetch data daftar peminjaman pribadi dari Swagger /api/loans/my
   const { data: loansResponse, isLoading } = useQuery({
     queryKey: ["userLoans", currentStatus, searchQuery],
     queryFn: async () => {
       const res = await api.get("/api/loans/my", {
         params: {
-          status: currentStatus.toLowerCase(),
+          status: currentStatus.toLowerCase(), // 'all' | 'active' | 'returned' | 'overdue'
           q: searchQuery || undefined,
           page: 1,
           limit: 20,
@@ -62,26 +32,7 @@ export default function BorrowedListPage() {
     },
   });
 
-  // Kirim Review ke Backend via Mutation
-  const reviewMutation = useMutation({
-    mutationFn: async (payload: {
-      bookId: number;
-      rating: number;
-      comment: string;
-    }) => {
-      const res = await api.post("/api/reviews", payload);
-      return res.data;
-    },
-    onSuccess: () => {
-      toast.success("Review submitted successfully!");
-      queryClient.invalidateQueries({ queryKey: ["userLoans"] });
-      closeReviewModal();
-    },
-    onError: (err: any) => {
-      toast.error(err?.response?.data?.message || "Failed to submit review");
-    },
-  });
-
+  // Pemetaan array dari response body swagger secara presisi
   const loans: BorrowedItem[] = loansResponse?.data?.loans || [];
 
   const handleStatusFilter = (status: string) => {
@@ -102,34 +53,10 @@ export default function BorrowedListPage() {
     }
   };
 
-  const openReviewModal = (bookId: number, bookTitle: string) => {
-    setSelectedBook({ id: bookId, title: bookTitle });
-    setRating(4); // Reset ke default figma
-    setComment("");
-    setIsModalOpen(true);
-  };
-
-  const closeReviewModal = () => {
-    setIsModalOpen(false);
-    setSelectedBook(null);
-  };
-
-  const handleSendReview = () => {
-    if (!selectedBook) return;
-    if (!comment.trim()) {
-      toast.error("Please type your thoughts before sending.");
-      return;
-    }
-    reviewMutation.mutate({
-      bookId: selectedBook.id,
-      rating: rating,
-      comment: comment,
-    });
-  };
-
   const getStatusBadgeClass = (displayStatus: string) => {
     switch (displayStatus) {
       case "Active":
+        return "bg-[rgba(36,165,0,0.05)] text-[#24A500]";
       case "Returned":
         return "bg-[rgba(36,165,0,0.05)] text-[#24A500]";
       case "Overdue":
@@ -139,17 +66,18 @@ export default function BorrowedListPage() {
     }
   };
 
+  // Helper pemformat tanggal sederhana (YYYY-MM-DD)
   const formatDate = (dateString: string) => {
     if (!dateString) return "-";
     return dateString.split("T")[0];
   };
 
   return (
-    <div className="relative min-h-screen bg-[#FDFDFD]">
+    <>
       <Navbar />
-      <div className="mx-auto flex w-full max-w-[1000px] flex-col gap-6 bg-white pt-8 pb-16 font-['Quicksand']">
-        {/* TABS CONTROL */}
-        <div className="flex h-[56px] w-[557px] items-center gap-2 rounded-[16px] bg-[#F5F5F5] p-2">
+      <div className="mx-auto flex w-full max-w-[1000px] flex-col gap-6 bg-white pt-8 pb-16 font-quicksand">
+        {/* 1. TOP TABS CONTROL (Sesuai Desain Figma Library) */}
+        <div className="flex h-[56px] w-[557px] items-center gap-2 rounded-2xl bg-[#F5F5F5] p-2">
           <Link
             to="/profile"
             className="flex h-[40px] w-[175px] items-center justify-center text-[16px] font-medium text-[#535862]"
@@ -171,7 +99,7 @@ export default function BorrowedListPage() {
           Borrowed List
         </h1>
 
-        {/* LOCAL SEARCH BAR */}
+        {/* 2. LOCAL SEARCH BAR */}
         <div className="w-[544px]">
           <InputGroup className="relative w-full">
             <div className="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-4">
@@ -197,7 +125,7 @@ export default function BorrowedListPage() {
           </InputGroup>
         </div>
 
-        {/* STATUS FILTERS */}
+        {/* 3. FILTER PILL STATUS BUTTONS */}
         <div className="flex h-[40px] items-center gap-3">
           {["All", "Active", "Returned", "Overdue"].map((status) => {
             const isActive = currentStatus === status;
@@ -217,7 +145,7 @@ export default function BorrowedListPage() {
           })}
         </div>
 
-        {/* LIST CARDS */}
+        {/* 4. LIST BORROWED CARDS */}
         <div className="mt-2 flex w-full flex-col gap-4">
           {isLoading ? (
             <p className="py-10 text-center text-gray-400">
@@ -241,6 +169,7 @@ export default function BorrowedListPage() {
                   key={item.id}
                   className="flex h-[250px] w-[1000px] flex-col gap-[20px] rounded-[16px] border border-gray-50 bg-white p-5 shadow-[0px_0px_20px_rgba(203,202,202,0.25)]"
                 >
+                  {/* Atas: Status & Due Date */}
                   <div className="flex h-[32px] w-full items-center justify-between">
                     <div className="flex items-center gap-3">
                       <span className="text-[16px] leading-[30px] font-bold text-[#0A0D12]">
@@ -252,6 +181,7 @@ export default function BorrowedListPage() {
                         {item.displayStatus}
                       </div>
                     </div>
+
                     <div className="flex items-center gap-3">
                       <span className="text-[16px] leading-[30px] font-bold text-[#0A0D12]">
                         Due Date
@@ -262,8 +192,10 @@ export default function BorrowedListPage() {
                     </div>
                   </div>
 
+                  {/* Garis Pembatas Line 9 */}
                   <hr className="w-full border-[#D5D7DA]" />
 
+                  {/* Bawah: Detail Buku & Tombol Review */}
                   <div className="flex h-[138px] w-full items-center justify-between">
                     <div className="flex h-full items-center gap-4">
                       <img
@@ -272,15 +204,19 @@ export default function BorrowedListPage() {
                         className="h-[138px] w-[92px] rounded-[4px] object-cover"
                       />
                       <div className="flex h-[134px] flex-col justify-start gap-1">
+                        {/* Tag Kategori */}
                         <div className="inline-flex h-7 w-fit items-center justify-center rounded-[6px] border border-[#D5D7DA] px-2 text-[14px] font-bold text-[#0A0D12]">
                           {item.book?.category?.name || "Category"}
                         </div>
+                        {/* Nama Buku */}
                         <h3 className="max-w-[500px] truncate text-[20px] leading-[34px] font-bold tracking-tight text-[#0A0D12]">
                           {item.book?.title}
                         </h3>
+                        {/* Nama Penulis */}
                         <p className="-mt-1 text-[16px] leading-[30px] font-medium text-[#414651]">
                           {item.book?.author?.name || "Author"}
                         </p>
+                        {/* Tanggal Pinjam & Durasi */}
                         <div className="flex items-center gap-2 text-[16px] leading-[30px] font-bold text-[#0A0D12]">
                           <span>{formatDate(item.borrowedAt)}</span>
                           <span className="h-1.5 w-1.5 rounded-full bg-[#0A0D12]" />
@@ -289,16 +225,13 @@ export default function BorrowedListPage() {
                       </div>
                     </div>
 
-                    {/* ACTION BUTTON - Memicu Modal Ulasan Pop-Up */}
-                    <button
-                      type="button"
-                      onClick={() =>
-                        openReviewModal(item.book.id, item.book.title)
-                      }
-                      className="flex h-[40px] w-[182px] cursor-pointer items-center justify-center rounded-full bg-[#1C65DA] text-[16px] font-bold text-[#FDFDFD] transition-colors hover:bg-[#154eb3]"
+                    {/* Tombol Aksi Kanan */}
+                    <Link
+                      to={`/books/${item.book?.id}`}
+                      className="flex h-[40px] w-[182px] items-center justify-center rounded-full bg-[#1C65DA] text-[16px] font-bold text-[#FDFDFD] transition-colors hover:bg-[#154eb3]"
                     >
                       Give Review
-                    </button>
+                    </Link>
                   </div>
                 </div>
               );
@@ -306,92 +239,14 @@ export default function BorrowedListPage() {
           )}
         </div>
 
-        {/* LOAD MORE */}
+        {/* 5. BUTTON LOAD MORE */}
         {!isLoading && loans.length >= 10 && (
           <button className="mx-auto mt-4 h-[48px] w-[200px] rounded-full border border-[#D5D7DA] text-[16px] font-bold tracking-tight text-[#0A0D12] transition-colors hover:bg-gray-50">
             Load More
           </button>
         )}
       </div>
-
-      {/* BACKDROP & INTERACTIVE REVIEW MODAL  */}
-      {isModalOpen && (
-        <div className="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          {/* Box Container Modal */}
-          <div
-            className="relative flex scale-100 flex-col items-center gap-[24px] border border-gray-100 bg-[#FFFFFF] p-[24px] shadow-2xl transition-all"
-            style={{
-              width: "439px",
-              height: "518px",
-              borderRadius: "16px",
-            }}
-          >
-            {/* Header Modal */}
-            <div className="flex h-[36px] w-[387px] flex-row items-center justify-between p-0">
-              <h2 className="Aquarium font-['Quicksand'] text-[24px] leading-[36px] font-bold text-[#0A0D12]">
-                Give Review
-              </h2>
-              {/* x-close button */}
-              <button
-                type="button"
-                onClick={closeReviewModal}
-                className="flex h-[24px] w-[24px] cursor-pointer items-center justify-center rounded-sm border-2 border-[#0A0D12] transition-colors hover:bg-gray-100"
-              >
-                <span className="-mt-[2px] text-[14px] leading-none font-bold">
-                  ✕
-                </span>
-              </button>
-            </div>
-
-            {/* Section Rating Header & Stars Container */}
-            <div className="flex h-[79px] w-[391px] flex-col items-center justify-center gap-2 p-0">
-              <span className="h-[30px] w-[391px] text-center font-['Quicksand'] text-[16px] leading-[30px] font-bold text-[#0A0D12]">
-                Give Rating
-              </span>
-
-              {/* Row 5 Stars Clickable */}
-              <div className="flex h-[49px] w-[391px] flex-row items-center justify-center gap-[4.08px] p-0">
-                {[1, 2, 3, 4, 5].map((starIdx) => {
-                  const isFilled = starIdx <= rating;
-                  return (
-                    <button
-                      key={starIdx}
-                      type="button"
-                      onClick={() => setRating(starIdx)}
-                      className="flex h-[49px] w-[49px] cursor-pointer items-center justify-center text-[40px] transition-transform hover:scale-110 focus:outline-none"
-                      style={{ color: isFilled ? "#FDB022" : "#A4A7AE" }}
-                    >
-                      ★
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Inputfield Textarea */}
-            <div className="box-sizing-border-box items-flex-start flex h-[235px] w-[391px] flex-row justify-center gap-[8px] rounded-[12px] border border-[#D5D7DA] bg-white p-[8px_12px]">
-              <textarea
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="Please share your thoughts about this book"
-                className="h-[210px] w-[367px] resize-none border-none bg-transparent font-['Quicksand'] text-[16px] leading-[30px] font-medium tracking-[-0.03em] text-[#0A0D12] placeholder-[#717680] focus:ring-0 focus:outline-none"
-              />
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="button"
-              onClick={handleSendReview}
-              disabled={reviewMutation.isPending}
-              className="flex h-[48px] w-[391px] cursor-pointer flex-row items-center justify-center gap-[8px] rounded-[200px] bg-[#1C65DA] p-[8px] shadow-md transition-colors hover:bg-[#154eb3] disabled:opacity-50"
-            >
-              <span className="flex h-[30px] w-[38px] items-center justify-center text-center font-['Quicksand'] text-[16px] leading-[30px] font-bold tracking-[-0.02em] text-[#FDFDFD]">
-                {reviewMutation.isPending ? "..." : "Send"}
-              </span>
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+      <Footer />
+    </>
   );
 }
